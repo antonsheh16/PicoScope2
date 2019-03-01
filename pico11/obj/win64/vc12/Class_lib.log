@@ -1,0 +1,8 @@
+﻿  Pico11.cpp
+..\Pico11.cpp(466): warning C4244: '=' : conversion from 'unsigned __int64' to 'Tango::DevDouble', possible loss of data
+  Pico11Class.cpp
+  Pico11StateMachine.cpp
+  p6000.cpp
+..\p6000.cpp(240): warning C4309: '=' : truncation of constant value
+  Generating Code...
+  Class_lib.vcxproj -> C:\Users\johnny\Desktop\pico11\vc12_proj\..\lib\win64\vc12\Pico11d.lib

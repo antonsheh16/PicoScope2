@@ -1,0 +1,10 @@
+﻿  ClassFactory.cpp
+     Creating library ..\bin\win64\vc12\debug\Pico11.lib and object ..\bin\win64\vc12\debug\Pico11.exp
+Pico11d.lib(p6000.obj) : error LNK2001: unresolved external symbol "public: static short p6000::g_autoStopped" (?g_autoStopped@p6000@@2FA)
+Pico11d.lib(p6000.obj) : error LNK2001: unresolved external symbol "public: static int p6000::g_ready" (?g_ready@p6000@@2HA)
+Pico11d.lib(p6000.obj) : error LNK2001: unresolved external symbol "public: static unsigned int p6000::g_sampleCount" (?g_sampleCount@p6000@@2IA)
+Pico11d.lib(p6000.obj) : error LNK2001: unresolved external symbol "public: static unsigned int p6000::g_startIndex" (?g_startIndex@p6000@@2IA)
+Pico11d.lib(p6000.obj) : error LNK2001: unresolved external symbol "public: static short p6000::g_trig" (?g_trig@p6000@@2FA)
+Pico11d.lib(p6000.obj) : error LNK2001: unresolved external symbol "public: static unsigned int p6000::g_trigAt" (?g_trigAt@p6000@@2IA)
+Pico11d.lib(p6000.obj) : error LNK2001: unresolved external symbol "public: static short p6000::g_overflow" (?g_overflow@p6000@@2FA)
+..\bin\win64\vc12\debug\Pico11.exe : fatal error LNK1120: 7 unresolved externals
