@@ -99,6 +99,279 @@ public:
 		{return (static_cast<Pico11 *>(dev))->is_DevCh_allowed(ty);}
 };
 
+//	Attribute TrgCh class definition
+class TrgChAttrib: public Tango::Attr
+{
+public:
+	TrgChAttrib():Attr("TrgCh",
+			Tango::DEV_DOUBLE, Tango::WRITE) {};
+	~TrgChAttrib() {};
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<Pico11 *>(dev))->write_TrgCh(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<Pico11 *>(dev))->is_TrgCh_allowed(ty);}
+};
+
+//	Attribute DevChooseStr class definition
+class DevChooseStrAttrib: public Tango::Attr
+{
+public:
+	DevChooseStrAttrib():Attr("DevChooseStr",
+			Tango::DEV_DOUBLE, Tango::WRITE) {};
+	~DevChooseStrAttrib() {};
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<Pico11 *>(dev))->write_DevChooseStr(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<Pico11 *>(dev))->is_DevChooseStr_allowed(ty);}
+};
+
+//	Attribute ThresholdUp class definition
+class ThresholdUpAttrib: public Tango::Attr
+{
+public:
+	ThresholdUpAttrib():Attr("ThresholdUp",
+			Tango::DEV_DOUBLE, Tango::WRITE) {};
+	~ThresholdUpAttrib() {};
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<Pico11 *>(dev))->write_ThresholdUp(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<Pico11 *>(dev))->is_ThresholdUp_allowed(ty);}
+};
+
+//	Attribute ThresholdLo class definition
+class ThresholdLoAttrib: public Tango::Attr
+{
+public:
+	ThresholdLoAttrib():Attr("ThresholdLo",
+			Tango::DEV_DOUBLE, Tango::WRITE) {};
+	~ThresholdLoAttrib() {};
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<Pico11 *>(dev))->write_ThresholdLo(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<Pico11 *>(dev))->is_ThresholdLo_allowed(ty);}
+};
+
+//	Attribute HysteresisUp class definition
+class HysteresisUpAttrib: public Tango::Attr
+{
+public:
+	HysteresisUpAttrib():Attr("HysteresisUp",
+			Tango::DEV_DOUBLE, Tango::WRITE) {};
+	~HysteresisUpAttrib() {};
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<Pico11 *>(dev))->write_HysteresisUp(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<Pico11 *>(dev))->is_HysteresisUp_allowed(ty);}
+};
+
+//	Attribute HysteresisLo class definition
+class HysteresisLoAttrib: public Tango::Attr
+{
+public:
+	HysteresisLoAttrib():Attr("HysteresisLo",
+			Tango::DEV_DOUBLE, Tango::WRITE) {};
+	~HysteresisLoAttrib() {};
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<Pico11 *>(dev))->write_HysteresisLo(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<Pico11 *>(dev))->is_HysteresisLo_allowed(ty);}
+};
+
+//	Attribute ThresholdMode class definition
+class ThresholdModeAttrib: public Tango::Attr
+{
+public:
+	ThresholdModeAttrib():Attr("ThresholdMode",
+			Tango::DEV_DOUBLE, Tango::WRITE) {};
+	~ThresholdModeAttrib() {};
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<Pico11 *>(dev))->write_ThresholdMode(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<Pico11 *>(dev))->is_ThresholdMode_allowed(ty);}
+};
+
+//	Attribute ChanACond class definition
+class ChanACondAttrib: public Tango::Attr
+{
+public:
+	ChanACondAttrib():Attr("ChanACond",
+			Tango::DEV_DOUBLE, Tango::WRITE) {};
+	~ChanACondAttrib() {};
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<Pico11 *>(dev))->write_ChanACond(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<Pico11 *>(dev))->is_ChanACond_allowed(ty);}
+};
+
+//	Attribute ChanBCond class definition
+class ChanBCondAttrib: public Tango::Attr
+{
+public:
+	ChanBCondAttrib():Attr("ChanBCond",
+			Tango::DEV_DOUBLE, Tango::WRITE) {};
+	~ChanBCondAttrib() {};
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<Pico11 *>(dev))->write_ChanBCond(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<Pico11 *>(dev))->is_ChanBCond_allowed(ty);}
+};
+
+//	Attribute ChanCCond class definition
+class ChanCCondAttrib: public Tango::Attr
+{
+public:
+	ChanCCondAttrib():Attr("ChanCCond",
+			Tango::DEV_DOUBLE, Tango::WRITE) {};
+	~ChanCCondAttrib() {};
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<Pico11 *>(dev))->write_ChanCCond(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<Pico11 *>(dev))->is_ChanCCond_allowed(ty);}
+};
+
+//	Attribute ChanDCond class definition
+class ChanDCondAttrib: public Tango::Attr
+{
+public:
+	ChanDCondAttrib():Attr("ChanDCond",
+			Tango::DEV_DOUBLE, Tango::WRITE) {};
+	~ChanDCondAttrib() {};
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<Pico11 *>(dev))->write_ChanDCond(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<Pico11 *>(dev))->is_ChanDCond_allowed(ty);}
+};
+
+//	Attribute ChanAuxCond class definition
+class ChanAuxCondAttrib: public Tango::Attr
+{
+public:
+	ChanAuxCondAttrib():Attr("ChanAuxCond",
+			Tango::DEV_DOUBLE, Tango::WRITE) {};
+	~ChanAuxCondAttrib() {};
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<Pico11 *>(dev))->write_ChanAuxCond(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<Pico11 *>(dev))->is_ChanAuxCond_allowed(ty);}
+};
+
+//	Attribute ChanPwqCond class definition
+class ChanPwqCondAttrib: public Tango::Attr
+{
+public:
+	ChanPwqCondAttrib():Attr("ChanPwqCond",
+			Tango::DEV_DOUBLE, Tango::WRITE) {};
+	~ChanPwqCondAttrib() {};
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<Pico11 *>(dev))->write_ChanPwqCond(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<Pico11 *>(dev))->is_ChanPwqCond_allowed(ty);}
+};
+
+//	Attribute ChanExtCond class definition
+class ChanExtCondAttrib: public Tango::Attr
+{
+public:
+	ChanExtCondAttrib():Attr("ChanExtCond",
+			Tango::DEV_DOUBLE, Tango::WRITE) {};
+	~ChanExtCondAttrib() {};
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<Pico11 *>(dev))->write_ChanExtCond(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<Pico11 *>(dev))->is_ChanExtCond_allowed(ty);}
+};
+
+//	Attribute ChanATrigDir class definition
+class ChanATrigDirAttrib: public Tango::Attr
+{
+public:
+	ChanATrigDirAttrib():Attr("ChanATrigDir",
+			Tango::DEV_DOUBLE, Tango::WRITE) {};
+	~ChanATrigDirAttrib() {};
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<Pico11 *>(dev))->write_ChanATrigDir(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<Pico11 *>(dev))->is_ChanATrigDir_allowed(ty);}
+};
+
+//	Attribute ChanBTrigDir class definition
+class ChanBTrigDirAttrib: public Tango::Attr
+{
+public:
+	ChanBTrigDirAttrib():Attr("ChanBTrigDir",
+			Tango::DEV_DOUBLE, Tango::WRITE) {};
+	~ChanBTrigDirAttrib() {};
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<Pico11 *>(dev))->write_ChanBTrigDir(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<Pico11 *>(dev))->is_ChanBTrigDir_allowed(ty);}
+};
+
+//	Attribute ChanCTrigDir class definition
+class ChanCTrigDirAttrib: public Tango::Attr
+{
+public:
+	ChanCTrigDirAttrib():Attr("ChanCTrigDir",
+			Tango::DEV_DOUBLE, Tango::WRITE) {};
+	~ChanCTrigDirAttrib() {};
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<Pico11 *>(dev))->write_ChanCTrigDir(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<Pico11 *>(dev))->is_ChanCTrigDir_allowed(ty);}
+};
+
+//	Attribute ChanDTrigDir class definition
+class ChanDTrigDirAttrib: public Tango::Attr
+{
+public:
+	ChanDTrigDirAttrib():Attr("ChanDTrigDir",
+			Tango::DEV_DOUBLE, Tango::WRITE) {};
+	~ChanDTrigDirAttrib() {};
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<Pico11 *>(dev))->write_ChanDTrigDir(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<Pico11 *>(dev))->is_ChanDTrigDir_allowed(ty);}
+};
+
+//	Attribute ChanAuxTrigDir class definition
+class ChanAuxTrigDirAttrib: public Tango::Attr
+{
+public:
+	ChanAuxTrigDirAttrib():Attr("ChanAuxTrigDir",
+			Tango::DEV_DOUBLE, Tango::WRITE) {};
+	~ChanAuxTrigDirAttrib() {};
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<Pico11 *>(dev))->write_ChanAuxTrigDir(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<Pico11 *>(dev))->is_ChanAuxTrigDir_allowed(ty);}
+};
+
+//	Attribute ChanExtTrigDir class definition
+class ChanExtTrigDirAttrib: public Tango::Attr
+{
+public:
+	ChanExtTrigDirAttrib():Attr("ChanExtTrigDir",
+			Tango::DEV_DOUBLE, Tango::WRITE) {};
+	~ChanExtTrigDirAttrib() {};
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<Pico11 *>(dev))->write_ChanExtTrigDir(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<Pico11 *>(dev))->is_ChanExtTrigDir_allowed(ty);}
+};
+
+//	Attribute TrigDelay class definition
+class TrigDelayAttrib: public Tango::Attr
+{
+public:
+	TrigDelayAttrib():Attr("TrigDelay",
+			Tango::DEV_DOUBLE, Tango::WRITE) {};
+	~TrigDelayAttrib() {};
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+		{(static_cast<Pico11 *>(dev))->write_TrigDelay(att);}
+	virtual bool is_allowed(Tango::DeviceImpl *dev,Tango::AttReqType ty)
+		{return (static_cast<Pico11 *>(dev))->is_TrigDelay_allowed(ty);}
+};
+
 //	Attribute chanA class definition
 class chanAAttrib: public Tango::SpectrumAttr
 {
@@ -291,6 +564,144 @@ public:
 	virtual CORBA::Any *execute (Tango::DeviceImpl *dev, const CORBA::Any &any);
 	virtual bool is_allowed (Tango::DeviceImpl *dev, const CORBA::Any &any)
 	{return (static_cast<Pico11 *>(dev))->is_Off_allowed(any);}
+};
+
+//	Command CollectBlock class definition
+class CollectBlockClass : public Tango::Command
+{
+public:
+	CollectBlockClass(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out,
+				   const char        *in_desc,
+				   const char        *out_desc,
+				   Tango::DispLevel  level)
+	:Command(name,in,out,in_desc,out_desc, level)	{};
+
+	CollectBlockClass(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out)
+	:Command(name,in,out)	{};
+	~CollectBlockClass() {};
+	
+	virtual CORBA::Any *execute (Tango::DeviceImpl *dev, const CORBA::Any &any);
+	virtual bool is_allowed (Tango::DeviceImpl *dev, const CORBA::Any &any)
+	{return (static_cast<Pico11 *>(dev))->is_CollectBlock_allowed(any);}
+};
+
+//	Command SetTrigParamA class definition
+class SetTrigParamAClass : public Tango::Command
+{
+public:
+	SetTrigParamAClass(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out,
+				   const char        *in_desc,
+				   const char        *out_desc,
+				   Tango::DispLevel  level)
+	:Command(name,in,out,in_desc,out_desc, level)	{};
+
+	SetTrigParamAClass(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out)
+	:Command(name,in,out)	{};
+	~SetTrigParamAClass() {};
+	
+	virtual CORBA::Any *execute (Tango::DeviceImpl *dev, const CORBA::Any &any);
+	virtual bool is_allowed (Tango::DeviceImpl *dev, const CORBA::Any &any)
+	{return (static_cast<Pico11 *>(dev))->is_SetTrigParamA_allowed(any);}
+};
+
+//	Command SetTrigParamB class definition
+class SetTrigParamBClass : public Tango::Command
+{
+public:
+	SetTrigParamBClass(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out,
+				   const char        *in_desc,
+				   const char        *out_desc,
+				   Tango::DispLevel  level)
+	:Command(name,in,out,in_desc,out_desc, level)	{};
+
+	SetTrigParamBClass(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out)
+	:Command(name,in,out)	{};
+	~SetTrigParamBClass() {};
+	
+	virtual CORBA::Any *execute (Tango::DeviceImpl *dev, const CORBA::Any &any);
+	virtual bool is_allowed (Tango::DeviceImpl *dev, const CORBA::Any &any)
+	{return (static_cast<Pico11 *>(dev))->is_SetTrigParamB_allowed(any);}
+};
+
+//	Command SetTrigParamC class definition
+class SetTrigParamCClass : public Tango::Command
+{
+public:
+	SetTrigParamCClass(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out,
+				   const char        *in_desc,
+				   const char        *out_desc,
+				   Tango::DispLevel  level)
+	:Command(name,in,out,in_desc,out_desc, level)	{};
+
+	SetTrigParamCClass(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out)
+	:Command(name,in,out)	{};
+	~SetTrigParamCClass() {};
+	
+	virtual CORBA::Any *execute (Tango::DeviceImpl *dev, const CORBA::Any &any);
+	virtual bool is_allowed (Tango::DeviceImpl *dev, const CORBA::Any &any)
+	{return (static_cast<Pico11 *>(dev))->is_SetTrigParamC_allowed(any);}
+};
+
+//	Command SetTrigParamD class definition
+class SetTrigParamDClass : public Tango::Command
+{
+public:
+	SetTrigParamDClass(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out,
+				   const char        *in_desc,
+				   const char        *out_desc,
+				   Tango::DispLevel  level)
+	:Command(name,in,out,in_desc,out_desc, level)	{};
+
+	SetTrigParamDClass(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out)
+	:Command(name,in,out)	{};
+	~SetTrigParamDClass() {};
+	
+	virtual CORBA::Any *execute (Tango::DeviceImpl *dev, const CORBA::Any &any);
+	virtual bool is_allowed (Tango::DeviceImpl *dev, const CORBA::Any &any)
+	{return (static_cast<Pico11 *>(dev))->is_SetTrigParamD_allowed(any);}
+};
+
+//	Command CollectBlockEts class definition
+class CollectBlockEtsClass : public Tango::Command
+{
+public:
+	CollectBlockEtsClass(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out,
+				   const char        *in_desc,
+				   const char        *out_desc,
+				   Tango::DispLevel  level)
+	:Command(name,in,out,in_desc,out_desc, level)	{};
+
+	CollectBlockEtsClass(const char   *name,
+	               Tango::CmdArgType in,
+				   Tango::CmdArgType out)
+	:Command(name,in,out)	{};
+	~CollectBlockEtsClass() {};
+	
+	virtual CORBA::Any *execute (Tango::DeviceImpl *dev, const CORBA::Any &any);
+	virtual bool is_allowed (Tango::DeviceImpl *dev, const CORBA::Any &any)
+	{return (static_cast<Pico11 *>(dev))->is_CollectBlockEts_allowed(any);}
 };
 
 

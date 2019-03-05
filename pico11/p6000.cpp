@@ -86,7 +86,7 @@ void p6000::StreamDataHandler(UNIT * unit)
 
 			status = ps6000SetDataBuffers(unit->handle, (PS6000_CHANNEL)i, buffers[i * 2], buffers[i * 2 + 1],
 				sampleCount, PS6000_RATIO_MODE_NONE);
-
+			checkStatus(status);
 			appBuffers[i * 2] = (int16_t*)calloc(sampleCount, sizeof(int16_t));
 			appBuffers[i * 2 + 1] = (int16_t*)calloc(sampleCount, sizeof(int16_t));
 		}
@@ -98,7 +98,7 @@ void p6000::StreamDataHandler(UNIT * unit)
 	bufferInfo.appBuffers = appBuffers;
 
 	status = ps6000RunStreaming(unit->handle, &sampleInterval, PS6000_US, preTrigger, postTrigger - preTrigger, autoStop, downsampleRatio, PS6000_RATIO_MODE_NONE, sampleCount);
-
+	checkStatus(status);
 	totalSamples = 0;
 
 	while (IsRunningGetValues)
@@ -108,7 +108,7 @@ void p6000::StreamDataHandler(UNIT * unit)
 		g_ready = FALSE;
 
 		status = ps6000GetStreamingLatestValues(unit->handle, CallBackStreaming, &bufferInfo);
-
+		checkStatus(status);
 		if (status != PICO_OK && status != PICO_BUSY)
 		{
 			printf("Streaming status return 0x%x\n", status);
@@ -224,6 +224,184 @@ void p6000::StreamDataHandler(UNIT * unit)
 	}
 }
 
+void p6000::BlockDataHandler(UNIT * unit, int32_t offset, int16_t etsModeSet)
+{
+	sampleCount = BUFFER_SIZE;
+	uint32_t maxSamples;
+	uint32_t segmentIndex = 0;
+	float timeInterval = 0.00f;
+
+	chanATT.clear();
+	chanBTT.clear();
+	chanCTT.clear();
+	chanDTT.clear();
+
+	int64_t * etsTimes; // Buffer for ETS time data
+
+	for (i = 0; i < unit->channelCount; i++)
+	{
+		if (unit->channelSettings[i].enabled)
+		{
+			buffers[i * 2] = (int16_t*)calloc(sampleCount, sizeof(int16_t));
+			buffers[i * 2 + 1] = (int16_t*)calloc(sampleCount, sizeof(int16_t));
+
+			status = ps6000SetDataBuffers(unit->handle, (PS6000_CHANNEL)i, buffers[i * 2], buffers[i * 2 + 1], sampleCount, PS6000_RATIO_MODE_NONE);
+			checkStatus(status);
+		}
+	}
+
+	// Set up ETS time buffers if ETS Block mode data is being captured
+	if (etsModeSet)
+	{
+		etsTimes = (int64_t *)calloc(sampleCount, sizeof(int64_t));
+		status = ps6000SetEtsTimeBuffer(unit->handle, etsTimes, sampleCount);
+		checkStatus(status);
+	}
+
+	/*  Find the maximum number of samples, the time interval (in timeUnits),
+	*		 the most suitable time units, and the maximum oversample at the current timebase*/
+	while ((status = ps6000GetTimebase2(unit->handle, timebase, sampleCount, &timeInterval, oversample, &maxSamples, segmentIndex)) != PICO_OK)
+	{
+		timebase++;
+	}
+
+	/* Start the device collecting, then wait for completion. */
+	g_ready2 = NULL;
+
+	status = ps6000RunBlock(unit->handle, 0, sampleCount, timebase, oversample, &timeIndisposed, segmentIndex, NULL, NULL);
+	checkStatus(status);
+	if (status != PICO_OK)
+	{
+		status = ps6000Stop(unit->handle);
+		checkStatus(status);
+		return;
+	}
+	while (g_ready2 == NULL)
+	{
+		status = ps6000IsReady(unit->handle, &g_ready2);
+	}
+
+	if (g_ready2)
+	{
+		status = ps6000GetValues(unit->handle, 0, (uint32_t*)&sampleCount, 1, PS6000_RATIO_MODE_NONE, 0, NULL);
+		checkStatus(status);
+		for (i = offset; i < offset + 10; i++)
+		{
+			for (j = 0; j < unit->channelCount; j++)
+			{
+				if (unit->channelSettings[j].enabled)
+				{
+					switch (j)
+					{
+					case 0:
+						(chanATT).push_back(buffers[j * 2][i]);
+						break;
+					case 1:
+						(chanBTT).push_back(buffers[j * 2][i]);
+						break;
+					case 2:
+						(chanCTT).push_back(buffers[j * 2][i]);
+						break;
+					case 3:
+						(chanDTT).push_back(buffers[j * 2][i]);
+						break;
+					}															// else print ADC Count
+				}
+			}
+		}
+
+		sampleCount = min(sampleCount, BUFFER_SIZE);
+		for (i = 0; (uint32_t)i < sampleCount; i++)
+		{
+			for (j = 0; j < unit->channelCount; j++)
+			{
+				if (unit->channelSettings[j].enabled)
+				{
+					if (etsModeSet)
+					{
+						switch (j)
+						{
+						case 0:
+							(chanATT).push_back(buffers[j * 2][i]);
+							break;
+						case 1:
+							(chanBTT).push_back(buffers[j * 2][i]);
+							break;
+						case 2:
+							(chanCTT).push_back(buffers[j * 2][i]);
+							break;
+						case 3:
+							(chanDTT).push_back(buffers[j * 2][i]);
+							break;
+						}
+					}
+					else
+					{
+
+						switch (j)
+						{
+						case 0:
+							(chanATT).push_back(buffers[j * 2][i]);
+							break;
+						case 1:
+							(chanBTT).push_back(buffers[j * 2][i]);
+							break;
+						case 2:
+							(chanCTT).push_back(buffers[j * 2][i]);
+							break;
+						case 3:
+							(chanDTT).push_back(buffers[j * 2][i]);
+							break;
+						}
+					}
+				}
+			}
+		}
+		for (qweA = 0; qweA < 7000; qweA = qweA + 1)
+		{
+			chanAT.push_back(chanATT[qweA]);
+		}
+		chanATT.clear();
+		for (qweB = 0; qweB < 7000; qweB = qweB + 1)
+		{
+			chanBT.push_back(chanBTT[qweB]);
+		}
+		chanBTT.clear();
+		for (qweC = 0; qweC < 7000; qweC = qweC + 1)
+		{
+			chanCT.push_back(chanCTT[qweC]);
+		}
+		chanCTT.clear();
+		for (qweD = 0; qweD < 7000; qweD = qweD + 1)
+		{
+			chanDT.push_back(chanDTT[qweD]);
+		}
+		chanDTT.clear();
+		BusyCopyDataA = FALSE;
+		BusyCopyDataB = FALSE;
+		BusyCopyDataC = FALSE;
+		BusyCopyDataD = FALSE;
+
+		
+	}
+	else
+	{
+		printf("Data collection aborted\n");
+	}
+	status = ps6000Stop(unit->handle);
+	checkStatus(status);
+
+	for (i = 0; i < unit->channelCount; i++)
+	{
+		if (unit->channelSettings[i].enabled)
+		{
+			free(buffers[i * 2]);
+			free(buffers[i * 2 + 1]);
+		}
+	}
+}
+
+
 PICO_STATUS p6000::OpenDevice(UNIT *unit, int8_t *serial)
 {
 	inputRanges[0] = 10;
@@ -244,9 +422,11 @@ PICO_STATUS p6000::OpenDevice(UNIT *unit, int8_t *serial)
 	if (serial == NULL)
 	{
 		status = ps6000OpenUnit(&unit->handle, NULL);
+		checkStatus(status);
 	}
 	else
 	{
+		checkStatus(status);
 		status = ps6000OpenUnit(&unit->handle, serial);
 	}
 
@@ -262,6 +442,8 @@ void p6000::SetDefaults(UNIT * unit)
 	int32_t i;
 
 	status = ps6000SetEts(unit->handle, PS6000_ETS_OFF, 0, 0, NULL); // Turn off ETS
+	checkStatus(status);
+
 
 	for (i = 0; i < unit->channelCount; i++) // reset channels to most recent settings
 	{
@@ -269,6 +451,7 @@ void p6000::SetDefaults(UNIT * unit)
 			unit->channelSettings[PS6000_CHANNEL_A + i].enabled,
 			(PS6000_COUPLING)unit->channelSettings[PS6000_CHANNEL_A + i].DCcoupled,
 			(PS6000_RANGE)unit->channelSettings[PS6000_CHANNEL_A + i].range, 0, PS6000_BW_FULL);
+		checkStatus(status);
 	}
 
 }
@@ -276,19 +459,7 @@ void p6000::SetDefaults(UNIT * unit)
 PICO_STATUS p6000::HandleDevice(UNIT * unit)
 {
 	int16_t value = 0;
-	struct tPwq pulseWidth;
-	struct tTriggerDirections directions;
-
-	printf("Handle: %d\n", unit->handle);
-	if (unit->openStatus != PICO_OK)
-	{
-		printf("Unable to open device\n");
-		printf("Error code : 0x%08x\n", (uint32_t)unit->openStatus);
-		while (!_kbhit());
-		exit(99); // exit program
-	}
-
-	printf("Device opened successfully, cycle %d\n\n", ++cycles);
+	checkStatus(unit->openStatus);
 	// setup device info - unless it's set already
 	if (unit->model == MODEL_NONE)
 	{
@@ -302,13 +473,31 @@ PICO_STATUS p6000::HandleDevice(UNIT * unit)
 	SetDefaults(unit);
 
 	/* Trigger disabled	*/
-	SetTrigger(unit->handle, NULL, 0, NULL, 0, &directions, &pulseWidth, 0, 0, 0);
+	SetTrigger(unit->handle, 0, NULL, 0, &directions, &pulseWidth, 0, 0, 0);
 
 	return unit->openStatus;
 }
 
+void p6000::TriggerSetup(int trg)
+{
+	UNIT * unit;
+	unit = &(allUnits[ChoosenDev]);
+	int16_t triggerThreshold = 0;
+
+	switch (trg)
+	{
+	case 0:
+		SetTrigger(unit->handle, 0, NULL, 0, &directions, &pulseWidth, 0, 0, 0);
+		break;
+	case 1:
+		SetTrigger(unit->handle, 1, &conditions, 1, &directions, &pulseWidth, TrigDelay, 0, 0);
+		break;
+	}
+	
+
+}
+
 PICO_STATUS p6000::SetTrigger(int16_t handle,
-	struct tPS6000TriggerChannelProperties * channelProperties,
 	int16_t nChannelProperties,
 	struct tPS6000TriggerConditions * triggerConditions,
 	int16_t nTriggerConditions,
@@ -320,19 +509,58 @@ PICO_STATUS p6000::SetTrigger(int16_t handle,
 {
 	PICO_STATUS status;
 
-	if ((status = ps6000SetTriggerChannelProperties(handle,
-		channelProperties,
-		nChannelProperties,
-		auxOutputEnabled,
-		autoTriggerMs)) != PICO_OK)
+	if (EnablChan[0] == 1)
 	{
-		printf("SetTrigger:ps6000SetTriggerChannelProperties ------ %d \n", status);
-		return status;
+		if ((status = ps6000SetTriggerChannelProperties(handle,
+			&sourceDetailsA,
+			nChannelProperties,
+			auxOutputEnabled,
+			autoTriggerMs)) != PICO_OK)
+		{
+			checkStatus(status);
+			return status;
+		}
+	}
+	if (EnablChan[1] == 1)
+	{
+		if ((status = ps6000SetTriggerChannelProperties(handle,
+			&sourceDetailsB,
+			nChannelProperties,
+			auxOutputEnabled,
+			autoTriggerMs)) != PICO_OK)
+		{
+			checkStatus(status);
+			return status;
+		}
+	}
+	if (EnablChan[2] == 1)
+	{
+		if ((status = ps6000SetTriggerChannelProperties(handle,
+			&sourceDetailsC,
+			nChannelProperties,
+			auxOutputEnabled,
+			autoTriggerMs)) != PICO_OK)
+		{
+			checkStatus(status);
+			return status;
+		}
+	}
+	if (EnablChan[3] == 1)
+	{
+		if ((status = ps6000SetTriggerChannelProperties(handle,
+			&sourceDetailsD,
+			nChannelProperties,
+			auxOutputEnabled,
+			autoTriggerMs)) != PICO_OK)
+		{
+			checkStatus(status);
+			return status;
+		}
 	}
 
 	if ((status = ps6000SetTriggerChannelConditions(handle, triggerConditions, nTriggerConditions)) != PICO_OK)
 	{
-		printf("SetTrigger:ps6000SetTriggerChannelConditions ------ %d \n", status);
+		checkStatus(status);
 		return status;
 	}
 
@@ -344,14 +572,14 @@ PICO_STATUS p6000::SetTrigger(int16_t handle,
 		directions->ext,
 		directions->aux)) != PICO_OK)
 	{
-		printf("SetTrigger:ps6000SetTriggerChannelDirections ------ %d \n", status);
+		checkStatus(status);
 		return status;
 	}
 
 
 	if ((status = ps6000SetTriggerDelay(handle, delay)) != PICO_OK)
 	{
-		printf("SetTrigger:ps6000SetTriggerDelay ------ %d \n", status);
+		checkStatus(status);
 		return status;
 	}
 
@@ -363,7 +591,7 @@ PICO_STATUS p6000::SetTrigger(int16_t handle,
 		pwq->upper,
 		pwq->type)) != PICO_OK)
 	{
-		printf("SetTrigger:ps6000SetPulseWidthQualifier ------ %d \n", status);
+		checkStatus(status);
 		return status;
 	}
 
@@ -379,6 +607,23 @@ p6000::p6000(std::string name)
 	g_trigAt = 0;
 	std::stringstream ss;
 	ReadyToWork = FALSE;
+	TrigDelay = 0;
+
+	conditions.channelA = PS6000_CONDITION_DONT_CARE;
+	conditions.channelB = PS6000_CONDITION_DONT_CARE;
+	conditions.channelC = PS6000_CONDITION_DONT_CARE;
+	conditions.channelD = PS6000_CONDITION_DONT_CARE;
+	conditions.external = PS6000_CONDITION_DONT_CARE;
+	conditions.aux = PS6000_CONDITION_DONT_CARE;
+	conditions.pulseWidthQualifier = PS6000_CONDITION_DONT_CARE;
+
+	directions.channelA = PS6000_NONE;
+	directions.channelB = PS6000_NONE;
+	directions.channelC = PS6000_NONE;
+	directions.channelD = PS6000_NONE;
+	directions.ext = PS6000_NONE;
+	directions.aux = PS6000_NONE;
+
 	do
 	{
 		memset(&(allUnits[devCount]), 0, sizeof(UNIT));
@@ -812,11 +1057,7 @@ void p6000::pick_device(int DevNum)
 				status6000 = HandleDevice(&allUnits[DevNum]);
 				ReadyToWork = TRUE;
 			}
-
-			if (status6000 != PICO_OK)
-			{
-				printf("Picoscope devices open failed, error code 0x%x\n", (uint32_t)status6000);
-			}
+			checkStatus(status6000);
 			ChoosenDev = DevNum;
 }
 
@@ -828,6 +1069,8 @@ void p6000::off()
 void p6000::on()
 {
 	status6000 = OpenDevice(&(allUnits[ChoosenDev]), NULL);
+	checkStatus(status6000);
+
 }
 
 void p6000::CollectBlockStr()
@@ -835,6 +1078,35 @@ void p6000::CollectBlockStr()
 	std::thread thr(&p6000::StreamDataHandler, this, &(allUnits[ChoosenDev]));
 	thr.detach();
 	IsRunningGetValues = TRUE;
+}
+
+void p6000::CollectBlock()
+{
+
+	BusyCopyDataA = TRUE;
+	BusyCopyDataB = TRUE;
+	BusyCopyDataC = TRUE;
+	BusyCopyDataD = TRUE;
+	std::thread thr(&p6000::BlockDataHandler, this, &(allUnits[ChoosenDev]), 0, FALSE);
+	thr.detach();
+}
+
+void p6000::CollectBlockEts()
+{
+	int32_t ets_sampletime;
+	status = ps6000SetEts(allUnits[ChoosenDev].handle, PS6000_ETS_FAST, 20, 4, &ets_sampletime);
+	checkStatus(status);
+	if (status == PICO_OK)
+	{
+		etsModeSet = TRUE;
+	}
+	BusyCopyDataA = TRUE;
+	BusyCopyDataB = TRUE;
+	BusyCopyDataC = TRUE;
+	BusyCopyDataD = TRUE;
+	std::thread thr(&p6000::BlockDataHandler, this, &(allUnits[ChoosenDev]), 0, FALSE);
+	thr.detach();
+	etsModeSet = FALSE;
 }
 
 void p6000::StopCollectStr()
@@ -845,9 +1117,589 @@ void p6000::StopCollectStr()
 
 
 
-void p6000::checkStatus( )
+void p6000::checkStatus(PICO_STATUS status)
 {
-	
+	std::stringstream ss;
+	switch (status)
+	{
+	case PICO_NOT_FOUND:
+		ss << "PICO_NOT_FOUND"; 
+		break;
+	case PICO_INVALID_HANDLE:
+		ss << "PICO_INVALID_HANDLE"; 
+		break;
+	case PICO_DRIVER_FUNCTION:
+		ss << "PICO_DRIVER_FUNCTION"; 
+		break;
+	case PICO_INVALID_VOLTAGE_RANGE:
+		ss << "PICO_INVALID_VOLTAGE_RANGE"; 
+		break;
+	case PICO_NULL_PARAMETER:
+		ss << "PICO_NULL_PARAMETER"; 
+		break;
+	case PICO_MAX_UNITS_OPENED:
+		ss << "PICO_MAX_UNITS_OPENED"; 
+		break;
+	case PICO_MEMORY_FAIL:
+		ss << "PICO_MEMORY_FAIL"; 
+		break;
+	case PICO_FW_FAIL:
+		ss << "PICO_FW_FAIL"; 
+		break;
+	case PICO_OPEN_OPERATION_IN_PROGRESS:
+		ss << "PICO_OPEN_OPERATION_IN_PROGRESS"; 
+		break;
+	case PICO_OPERATION_FAILED:
+		ss << "PICO_OPERATION_FAILED"; 
+		break;
+	case PICO_NOT_RESPONDING:
+		ss << "PICO_NOT_RESPONDING"; 
+		break;
+	case PICO_CONFIG_FAIL:
+		ss << "PICO_CONFIG_FAIL"; 
+		break;
+	case PICO_KERNEL_DRIVER_TOO_OLD:
+		ss << "PICO_KERNEL_DRIVER_TOO_OLD"; 
+		break;
+	case PICO_EEPROM_CORRUPT:
+		ss << "PICO_EEPROM_CORRUPT"; 
+		break;
+	case PICO_OS_NOT_SUPPORTED:
+		ss << "PICO_OS_NOT_SUPPORTED"; 
+		break;
+	case PICO_INVALID_PARAMETER:
+		ss << "PICO_INVALID_PARAMETER"; 
+		break;
+	case PICO_INVALID_TIMEBASE:
+		ss << "PICO_INVALID_TIMEBASE"; 
+		break;
+	case PICO_INVALID_CHANNEL:
+		ss << "PICO_INVALID_CHANNEL"; 
+		break;
+	case PICO_INVALID_TRIGGER_CHANNEL:
+		ss << "PICO_INVALID_TRIGGER_CHANNEL"; 
+		break;
+	case PICO_INVALID_CONDITION_CHANNEL:
+		ss << "PICO_INVALID_CONDITION_CHANNEL"; 
+		break;
+	case PICO_NO_SIGNAL_GENERATOR:
+		ss << "PICO_NO_SIGNAL_GENERATOR"; 
+		break;
+	case PICO_STREAMING_FAILED:
+		ss << "PICO_STREAMING_FAILED"; 
+		break;
+	case PICO_BLOCK_MODE_FAILED:
+		ss << "PICO_BLOCK_MODE_FAILED"; 
+		break;
+	case PICO_ETS_MODE_SET:
+		ss << "PICO_ETS_MODE_SET"; 
+		break;
+	case PICO_DATA_NOT_AVAILABLE:
+		ss << "PICO_DATA_NOT_AVAILABLE"; 
+		break;
+	case PICO_STRING_BUFFER_TO_SMALL:
+		ss << "PICO_STRING_BUFFER_TO_SMALL"; 
+		break;
+	case PICO_ETS_NOT_SUPPORTED:
+		ss << "PICO_ETS_NOT_SUPPORTED"; 
+		break;
+	case PICO_AUTO_TRIGGER_TIME_TO_SHORT:
+		ss << "PICO_AUTO_TRIGGER_TIME_TO_SHORT"; 
+		break;
+	case PICO_BUFFER_STALL:
+		ss << "PICO_BUFFER_STALL"; 
+		break;
+	case PICO_TOO_MANY_SAMPLES:
+		ss << "PICO_TOO_MANY_SAMPLES"; 
+		break;
+	case PICO_TOO_MANY_SEGMENTS:
+		ss << "PICO_TOO_MANY_SEGMENTS"; 
+		break;
+	case PICO_PULSE_WIDTH_QUALIFIER:
+		ss << "PICO_PULSE_WIDTH_QUALIFIER"; 
+		break;
+	case PICO_DELAY:
+		ss << "PICO_DELAY"; 
+		break;
+	case PICO_SOURCE_DETAILS:
+		ss << "PICO_SOURCE_DETAILS"; 
+		break;
+	case PICO_CONDITIONS:
+		ss << "PICO_CONDITIONS"; 
+		break;
+	case PICO_USER_CALLBACK:
+		ss << "PICO_USER_CALLBACK"; 
+		break;
+	case PICO_DEVICE_SAMPLING:
+		ss << "PICO_DEVICE_SAMPLING"; 
+		break;
+	case PICO_NO_SAMPLES_AVAILABLE:
+		ss << "PICO_NO_SAMPLES_AVAILABLE"; 
+		break;
+	case PICO_SEGMENT_OUT_OF_RANGE:
+		ss << "PICO_SEGMENT_OUT_OF_RANGE"; 
+		break;
+	case PICO_BUSY:
+		ss << "PICO_BUSY"; 
+		break;
+	case PICO_STARTINDEX_INVALID:
+		ss << "PICO_STARTINDEX_INVALID"; 
+		break;
+	case PICO_INVALID_INFO:
+		ss << "PICO_INVALID_INFO"; 
+		break;
+	case PICO_INFO_UNAVAILABLE:
+		ss << "PICO_INFO_UNAVAILABLE"; 
+		break;
+	case PICO_INVALID_SAMPLE_INTERVAL:
+		ss << "PICO_INVALID_SAMPLE_INTERVAL"; 
+		break;
+	case PICO_TRIGGER_ERROR:
+		ss << "PICO_TRIGGER_ERROR"; 
+		break;
+	case PICO_MEMORY:
+		ss << "PICO_MEMORY"; 
+		break;
+	case PICO_SIG_GEN_PARAM:
+		ss << "PICO_SIG_GEN_PARAM"; 
+		break;
+	case PICO_SHOTS_SWEEPS_WARNING:
+		ss << "PICO_SHOTS_SWEEPS_WARNING"; 
+		break;
+	case PICO_SIGGEN_TRIGGER_SOURCE:
+		ss << "PICO_SIGGEN_TRIGGER_SOURCE"; 
+		break;
+	case PICO_AUX_OUTPUT_CONFLICT:
+		ss << "PICO_AUX_OUTPUT_CONFLICT"; 
+		break;
+	case PICO_AUX_OUTPUT_ETS_CONFLICT:
+		ss << "PICO_AUX_OUTPUT_ETS_CONFLICT"; 
+		break;
+	case PICO_WARNING_EXT_THRESHOLD_CONFLICT:
+		ss << "PICO_WARNING_EXT_THRESHOLD_CONFLICT"; 
+		break;
+	case PICO_WARNING_AUX_OUTPUT_CONFLICT:
+		ss << "PICO_WARNING_AUX_OUTPUT_CONFLICT"; 
+		break;
+	case PICO_SIGGEN_OUTPUT_OVER_VOLTAGE:
+		ss << "PICO_SIGGEN_OUTPUT_OVER_VOLTAGE";
+		break;
+	case PICO_DELAY_NULL:
+		ss << "PICO_DELAY_NULL"; 
+		break;
+	case PICO_INVALID_BUFFER:
+		ss << "PICO_INVALID_BUFFER"; 
+		break;
+	case PICO_SIGGEN_OFFSET_VOLTAGE:
+		ss << "PICO_SIGGEN_OFFSET_VOLTAGE"; 
+		break;
+	case PICO_SIGGEN_PK_TO_PK:
+		ss << "PICO_SIGGEN_PK_TO_PK"; 
+		break;
+	case PICO_CANCELLED:
+		ss << "PICO_CANCELLED"; 
+		break;
+	case PICO_SEGMENT_NOT_USED:
+		ss << "PICO_SEGMENT_NOT_USED"; 
+		break;
+	case PICO_INVALID_CALL:
+		ss << "PICO_INVALID_CALL"; 
+		break;
+	case PICO_GET_VALUES_INTERRUPTED:
+		ss << "PICO_GET_VALUES_INTERRUPTED"; 
+		break;
+	case PICO_NOT_USED:
+		ss << "PICO_NOT_USED"; 
+		break;
+	case PICO_INVALID_SAMPLERATIO:
+		ss << "PICO_INVALID_SAMPLERATIO"; 
+		break;
+	case PICO_INVALID_STATE:
+		ss << "PICO_INVALID_STATE"; 
+		break;
+	case PICO_NOT_ENOUGH_SEGMENTS:
+		ss << "PICO_NOT_ENOUGH_SEGMENTS"; 
+		break;
+	case PICO_RESERVED:
+		ss << "PICO_RESERVED"; 
+		break;
+	case PICO_INVALID_COUPLING:
+		ss << "PICO_INVALID_COUPLING"; 
+		break;
+	case PICO_BUFFERS_NOT_SET:
+		ss << "PICO_BUFFERS_NOT_SET"; 
+		break;
+	case PICO_RATIO_MODE_NOT_SUPPORTED:
+		ss << "PICO_RATIO_MODE_NOT_SUPPORTED"; 
+		break;
+	case PICO_RAPID_NOT_SUPPORT_AGGREGATION:
+		ss << "PICO_RAPID_NOT_SUPPORT_AGGREGATION"; 
+		break;
+	case PICO_INVALID_TRIGGER_PROPERTY:
+		ss << "PICO_INVALID_TRIGGER_PROPERTY"; 
+		break;
+	case PICO_INTERFACE_NOT_CONNECTED:
+		ss << "PICO_INTERFACE_NOT_CONNECTED"; 
+		break;
+	case PICO_RESISTANCE_AND_PROBE_NOT_ALLOWED:
+		ss << "PICO_RESISTANCE_AND_PROBE_NOT_ALLOWED"; 
+		break;
+	case PICO_POWER_FAILED:
+		ss << "PICO_POWER_FAILED"; 
+		break;
+	case PICO_SIGGEN_WAVEFORM_SETUP_FAILED:
+		ss << "PICO_SIGGEN_WAVEFORM_SETUP_FAILED"; 
+		break;
+	case PICO_FPGA_FAIL:
+		ss << "PICO_FPGA_FAIL"; 
+		break;
+	case PICO_POWER_MANAGER:
+		ss << "PICO_POWER_MANAGER"; 
+		break;
+	case PICO_INVALID_ANALOGUE_OFFSET:
+		ss << "PICO_INVALID_ANALOGUE_OFFSET"; 
+		break;
+	case PICO_PLL_LOCK_FAILED:
+		ss << "PICO_PLL_LOCK_FAILED"; 
+		break;
+	case PICO_ANALOG_BOARD:
+		ss << "PICO_ANALOG_BOARD"; 
+		break;
+	case PICO_CONFIG_FAIL_AWG:
+		ss << "PICO_CONFIG_FAIL_AWG"; 
+		break;
+	case PICO_INITIALISE_FPGA:
+		ss << "PICO_INITIALISE_FPGA"; 
+		break;
+	case PICO_EXTERNAL_FREQUENCY_INVALID:
+		ss << "PICO_EXTERNAL_FREQUENCY_INVALID"; 
+		break;
+	case PICO_CLOCK_CHANGE_ERROR:
+		ss << "PICO_CLOCK_CHANGE_ERROR"; 
+		break;
+	case PICO_TRIGGER_AND_EXTERNAL_CLOCK_CLASH:
+		ss << "PICO_TRIGGER_AND_EXTERNAL_CLOCK_CLASH"; 
+		break;
+	case PICO_PWQ_AND_EXTERNAL_CLOCK_CLASH:
+		ss << "PICO_PWQ_AND_EXTERNAL_CLOCK_CLASH"; 
+		break;
+	case PICO_UNABLE_TO_OPEN_SCALING_FILE:
+		ss << "PICO_UNABLE_TO_OPEN_SCALING_FILE"; 
+		break;
+	case PICO_MEMORY_CLOCK_FREQUENCY:
+		ss << "PICO_MEMORY_CLOCK_FREQUENCY"; 
+		break;
+	case PICO_I2C_NOT_RESPONDING:
+		ss << "PICO_I2C_NOT_RESPONDING"; 
+		break;
+	case PICO_NO_CAPTURES_AVAILABLE:
+		ss << "PICO_NO_CAPTURES_AVAILABLE"; 
+		break;
+	case PICO_TOO_MANY_TRIGGER_CHANNELS_IN_USE:
+		ss << "PICO_TOO_MANY_TRIGGER_CHANNELS_IN_USE"; 
+		break;
+	case PICO_INVALID_TRIGGER_DIRECTION:
+		ss << "PICO_INVALID_TRIGGER_DIRECTION"; 
+		break;
+	case PICO_INVALID_TRIGGER_STATES:
+		ss << "PICO_INVALID_TRIGGER_STATES";
+		break;
+	case PICO_NOT_USED_IN_THIS_CAPTURE_MODE:
+		ss << "PICO_NOT_USED_IN_THIS_CAPTURE_MODE"; 
+		break;
+	case PICO_GET_DATA_ACTIVE:
+		ss << "PICO_GET_DATA_ACTIVE"; 
+		break;
+	case PICO_IP_NETWORKED:
+		ss << "PICO_IP_NETWORKED"; 
+		break;
+	case PICO_INVALID_IP_ADDRESS:
+		ss << "PICO_INVALID_IP_ADDRESS"; 
+		break;
+	case PICO_IPSOCKET_FAILED:
+		ss << "PICO_IPSOCKET_FAILED"; 
+		break;
+	case PICO_IPSOCKET_TIMEDOUT:
+		ss << "PICO_IPSOCKET_TIMEDOUT"; 
+		break;
+	case PICO_SETTINGS_FAILED:
+		ss << "PICO_SETTINGS_FAILED";
+		break;
+	case PICO_NETWORK_FAILED:
+		ss << "PICO_NETWORK_FAILED"; 
+		break;
+	case PICO_WS2_32_DLL_NOT_LOADED:
+		ss << "PICO_WS2_32_DLL_NOT_LOADED";
+		break;
+	case PICO_INVALID_IP_PORT:
+		ss << "PICO_INVALID_IP_PORT";
+		break;
+	case PICO_COUPLING_NOT_SUPPORTED:
+		ss << "PICO_COUPLING_NOT_SUPPORTED"; 
+		break;
+	case PICO_BANDWIDTH_NOT_SUPPORTED:
+		ss << "PICO_BANDWIDTH_NOT_SUPPORTED"; 
+		break;
+	case PICO_INVALID_BANDWIDTH:
+		ss << "PICO_INVALID_BANDWIDTH"; 
+		break;
+	case PICO_AWG_NOT_SUPPORTED:
+		ss << "PICO_AWG_NOT_SUPPORTED"; 
+		break;
+	case PICO_ETS_NOT_RUNNING:
+		ss << "PICO_ETS_NOT_RUNNING"; 
+		break;
+	case PICO_SIG_GEN_WHITENOISE_NOT_SUPPORTED:
+		ss << "PICO_SIG_GEN_WHITENOISE_NOT_SUPPORTED"; 
+		break;
+	case PICO_SIG_GEN_WAVETYPE_NOT_SUPPORTED:
+		ss << "PICO_SIG_GEN_WAVETYPE_NOT_SUPPORTED"; 
+		break;
+	case PICO_INVALID_DIGITAL_PORT:
+		ss << "PICO_INVALID_DIGITAL_PORT"; 
+		break;
+	case PICO_INVALID_DIGITAL_CHANNEL:
+		ss << "PICO_INVALID_DIGITAL_CHANNEL"; 
+		break;
+	case PICO_INVALID_DIGITAL_TRIGGER_DIRECTION:
+		ss << "PICO_INVALID_DIGITAL_TRIGGER_DIRECTION"; 
+		break;
+	case PICO_SIG_GEN_PRBS_NOT_SUPPORTED:
+		ss << "PICO_SIG_GEN_PRBS_NOT_SUPPORTED"; 
+		break;
+	case PICO_ETS_NOT_AVAILABLE_WITH_LOGIC_CHANNELS:
+		ss << "PICO_ETS_NOT_AVAILABLE_WITH_LOGIC_CHANNELS"; 
+		break;
+	case PICO_WARNING_REPEAT_VALUE:
+		ss << "PICO_WARNING_REPEAT_VALUE"; 
+		break;
+	case PICO_POWER_SUPPLY_CONNECTED:
+		ss << "PICO_POWER_SUPPLY_CONNECTED"; 
+		break;
+	case PICO_POWER_SUPPLY_NOT_CONNECTED:
+		ss << "PICO_POWER_SUPPLY_NOT_CONNECTED"; 
+		break;
+	case PICO_POWER_SUPPLY_REQUEST_INVALID:
+		ss << "PICO_POWER_SUPPLY_REQUEST_INVALID"; 
+		break;
+	case PICO_POWER_SUPPLY_UNDERVOLTAGE:
+		ss << "PICO_POWER_SUPPLY_UNDERVOLTAGE"; 
+		break;
+	case PICO_CAPTURING_DATA:
+		ss << "PICO_CAPTURING_DATA";
+		break;
+	case PICO_USB3_0_DEVICE_NON_USB3_0_PORT:
+		ss << "PICO_USB3_0_DEVICE_NON_USB3_0_PORT"; 
+		break;
+	case PICO_NOT_SUPPORTED_BY_THIS_DEVICE:
+		ss << "PICO_NOT_SUPPORTED_BY_THIS_DEVICE";
+		break;
+	case PICO_INVALID_DEVICE_RESOLUTION:
+		ss << "PICO_INVALID_DEVICE_RESOLUTION"; 
+		break;
+	case PICO_INVALID_NUMBER_CHANNELS_FOR_RESOLUTION:
+		ss << "PICO_INVALID_NUMBER_CHANNELS_FOR_RESOLUTION"; 
+		break;
+	case PICO_CHANNEL_DISABLED_DUE_TO_USB_POWERED:
+		ss << "PICO_CHANNEL_DISABLED_DUE_TO_USB_POWERED"; 
+		break;
+	case PICO_SIGGEN_DC_VOLTAGE_NOT_CONFIGURABLE:
+		ss << "PICO_SIGGEN_DC_VOLTAGE_NOT_CONFIGURABLE"; 
+		break;
+	case PICO_NO_TRIGGER_ENABLED_FOR_TRIGGER_IN_PRE_TRIG:
+		ss << "PICO_NO_TRIGGER_ENABLED_FOR_TRIGGER_IN_PRE_TRIG"; 
+		break;
+	case PICO_TRIGGER_WITHIN_PRE_TRIG_NOT_ARMED:
+		ss << "PICO_TRIGGER_WITHIN_PRE_TRIG_NOT_ARMED"; 
+		break;
+	case PICO_TRIGGER_WITHIN_PRE_NOT_ALLOWED_WITH_DELAY:
+		ss << "PICO_TRIGGER_WITHIN_PRE_NOT_ALLOWED_WITH_DELAY"; 
+		break;
+	case PICO_TRIGGER_INDEX_UNAVAILABLE:
+		ss << "PICO_TRIGGER_INDEX_UNAVAILABLE"; 
+		break;
+	case PICO_AWG_CLOCK_FREQUENCY:
+		ss << "PICO_AWG_CLOCK_FREQUENCY"; 
+		break;
+	case PICO_TOO_MANY_CHANNELS_IN_USE:
+		ss << "PICO_TOO_MANY_CHANNELS_IN_USE"; 
+		break;
+	case PICO_NULL_CONDITIONS:
+		ss << "PICO_NULL_CONDITIONS"; 
+		break;
+	case PICO_DUPLICATE_CONDITION_SOURCE:
+		ss << "PICO_DUPLICATE_CONDITION_SOURCE"; 
+		break;
+	case PICO_INVALID_CONDITION_INFO:
+		ss << "PICO_INVALID_CONDITION_INFO"; 
+		break;
+	case PICO_SETTINGS_READ_FAILED:
+		ss << "PICO_SETTINGS_READ_FAILED"; 
+		break;
+	case PICO_SETTINGS_WRITE_FAILED:
+		ss << "PICO_SETTINGS_WRITE_FAILED"; 
+		break;
+	case PICO_ARGUMENT_OUT_OF_RANGE:
+		ss << "PICO_ARGUMENT_OUT_OF_RANGE"; 
+		break;
+	case PICO_HARDWARE_VERSION_NOT_SUPPORTED:
+		ss << "PICO_HARDWARE_VERSION_NOT_SUPPORTED"; 
+		break;
+	case PICO_DIGITAL_HARDWARE_VERSION_NOT_SUPPORTED:
+		ss << "PICO_DIGITAL_HARDWARE_VERSION_NOT_SUPPORTED"; 
+		break;
+	case PICO_ANALOGUE_HARDWARE_VERSION_NOT_SUPPORTED:
+		ss << "PICO_ANALOGUE_HARDWARE_VERSION_NOT_SUPPORTED";
+		break;
+	case PICO_UNABLE_TO_CONVERT_TO_RESISTANCE:
+		ss << "PICO_UNABLE_TO_CONVERT_TO_RESISTANCE"; 
+		break;
+	case PICO_DUPLICATED_CHANNEL:
+		ss << "PICO_DUPLICATED_CHANNEL"; 
+		break;
+	case PICO_INVALID_RESISTANCE_CONVERSION:
+		ss << "PICO_INVALID_RESISTANCE_CONVERSION"; 
+		break;
+	case PICO_INVALID_VALUE_IN_MAX_BUFFER:
+		ss << "PICO_INVALID_VALUE_IN_MAX_BUFFER"; 
+		break;
+	case PICO_INVALID_VALUE_IN_MIN_BUFFER:
+		ss << "PICO_INVALID_VALUE_IN_MIN_BUFFER";
+		break;
+	case PICO_SIGGEN_FREQUENCY_OUT_OF_RANGE:
+		ss << "PICO_SIGGEN_FREQUENCY_OUT_OF_RANGE"; 
+		break;
+	case PICO_EEPROM2_CORRUPT:
+		ss << "PICO_EEPROM2_CORRUPT"; 
+		break;
+	case PICO_EEPROM2_FAIL:
+		ss << "PICO_EEPROM2_FAIL"; 
+		break;
+	case PICO_SERIAL_BUFFER_TOO_SMALL:
+		ss << "PICO_SERIAL_BUFFER_TOO_SMALL"; 
+		break;
+	case PICO_SIGGEN_TRIGGER_AND_EXTERNAL_CLOCK_CLASH:
+		ss << "PICO_SIGGEN_TRIGGER_AND_EXTERNAL_CLOCK_CLASH"; 
+		break;
+	case PICO_WARNING_SIGGEN_AUXIO_TRIGGER_DISABLED:
+		ss << "PICO_WARNING_SIGGEN_AUXIO_TRIGGER_DISABLED"; 
+		break;
+	case PICO_SIGGEN_GATING_AUXIO_NOT_AVAILABLE:
+		ss << "PICO_SIGGEN_GATING_AUXIO_NOT_AVAILABLE"; 
+		break;
+	case PICO_SIGGEN_GATING_AUXIO_ENABLED:
+		ss << "PICO_SIGGEN_GATING_AUXIO_ENABLED";
+		break;
+	case PICO_RESOURCE_ERROR:
+		ss << "PICO_RESOURCE_ERROR";
+		break;
+	case PICO_TEMPERATURE_TYPE_INVALID:
+		ss << "PICO_TEMPERATURE_TYPE_INVALID"; 
+		break;
+	case PICO_TEMPERATURE_TYPE_NOT_SUPPORTED:
+		ss << "PICO_TEMPERATURE_TYPE_NOT_SUPPORTED";
+		break;
+	case PICO_TIMEOUT:
+		ss << "PICO_TIMEOUT"; 
+		break;
+	case PICO_DEVICE_NOT_FUNCTIONING:
+		ss << "PICO_DEVICE_NOT_FUNCTIONING"; 
+		break;
+	case PICO_INTERNAL_ERROR:
+		ss << "PICO_INTERNAL_ERROR"; 
+		break;
+	case PICO_MULTIPLE_DEVICES_FOUND:
+		ss << "PICO_MULTIPLE_DEVICES_FOUND"; 
+		break;
+	case PICO_WARNING_NUMBER_OF_SEGMENTS_REDUCED:
+		ss << "PICO_WARNING_NUMBER_OF_SEGMENTS_REDUCED"; 
+		break;
+	case PICO_CAL_PINS_STATES:
+		ss << "PICO_CAL_PINS_STATES"; 
+		break;
+	case PICO_CAL_PINS_FREQUENCY:
+		ss << "PICO_CAL_PINS_FREQUENCY"; 
+		break;
+	case PICO_CAL_PINS_AMPLITUDE:
+		ss << "PICO_CAL_PINS_AMPLITUDE"; 
+		break;
+	case PICO_CAL_PINS_WAVETYPE:
+		ss << "PICO_CAL_PINS_WAVETYPE"; 
+		break;
+	case PICO_CAL_PINS_OFFSET:
+		ss << "PICO_CAL_PINS_OFFSET"; 
+		break;
+	case PICO_PROBE_FAULT:
+		ss << "PICO_PROBE_FAULT";
+		break;
+	case PICO_PROBE_IDENTITY_UNKNOWN:
+		ss << "PICO_PROBE_IDENTITY_UNKNOWN"; 
+		break;
+	case PICO_PROBE_POWER_DC_POWER_SUPPLY_REQUIRED:
+		ss << "PICO_PROBE_POWER_DC_POWER_SUPPLY_REQUIRED"; 
+		break;
+	case PICO_PROBE_NOT_POWERED_WITH_DC_POWER_SUPPLY:
+		ss << "PICO_PROBE_NOT_POWERED_WITH_DC_POWER_SUPPLY";
+		break;
+	case PICO_PROBE_CONFIG_FAILURE:
+		ss << "PICO_PROBE_CONFIG_FAILURE"; 
+		break;
+	case PICO_PROBE_INTERACTION_CALLBACK:
+		ss << "PICO_PROBE_INTERACTION_CALLBACK"; 
+		break;
+	case PICO_UNKNOWN_INTELLIGENT_PROBE:
+		ss << "PICO_UNKNOWN_INTELLIGENT_PROBE"; 
+		break;
+	case PICO_INTELLIGENT_PROBE_CORRUPT:
+		ss << "PICO_INTELLIGENT_PROBE_CORRUPT";
+		break;
+	case PICO_PROBE_COLLECTION_NOT_STARTED:
+		ss << "PICO_PROBE_COLLECTION_NOT_STARTED"; 
+		break;
+	case PICO_PROBE_POWER_CONSUMPTION_EXCEEDED:
+		ss << "PICO_PROBE_POWER_CONSUMPTION_EXCEEDED";
+		break;
+	case PICO_WARNING_PROBE_CHANNEL_OUT_OF_SYNC:
+		ss << "PICO_WARNING_PROBE_CHANNEL_OUT_OF_SYNC";
+		break;
+	case PICO_DEVICE_TIME_STAMP_RESET:
+		ss << "PICO_DEVICE_TIME_STAMP_RESET";
+		break;
+	case PICO_WATCHDOGTIMER:
+		ss << "PICO_WATCHDOGTIMER"; 
+		break;
+	case PICO_IPP_NOT_FOUND:
+		ss << "PICO_IPP_NOT_FOUND"; 
+		break;
+	case PICO_IPP_NO_FUNCTION:
+		ss << "PICO_IPP_NO_FUNCTION"; 
+		break;
+	case PICO_IPP_ERROR:
+		ss << "PICO_IPP_ERROR";
+		break;
+	case PICO_SHADOW_CAL_NOT_AVAILABLE:
+		ss << "PICO_SHADOW_CAL_NOT_AVAILABLE"; 
+		break;
+	case PICO_SHADOW_CAL_DISABLED:
+		ss << "PICO_SHADOW_CAL_DISABLED"; 
+		break;
+	case PICO_SHADOW_CAL_ERROR:
+		ss << "PICO_SHADOW_CAL_ERROR "; 
+		break;
+	case PICO_SHADOW_CAL_CORRUPT:
+		ss << "PICO_SHADOW_CAL_CORRUPT"; 
+		break;
+	case PICO_DEVICE_MEMORY_OVERFLOW:
+		ss << "PICO_DEVICE_MEMORY_OVERFLOW"; 
+		break;
+	case PICO_RESERVED_1:
+		ss << "PICO_RESERVED_1"; 
+		break;
+	default:
+		ss << "UNKNOWN EXCEPTION";
+		break;
+	}
+	throw std::runtime_error(ss.str());
 }
 
 
@@ -855,3 +1707,72 @@ void p6000::CloseDevice(UNIT *unit)
 {
 	ps6000CloseUnit(unit->handle);
 }
+
+int16_t p6000::mv_to_adc(int16_t mv, int16_t ch)
+{
+	return (mv * PS6000_MAX_VALUE) / inputRanges[ch];
+}
+
+int32_t p6000::adc_to_mv(int32_t raw, int32_t ch)
+{
+	return (raw * inputRanges[ch]) / PS6000_MAX_VALUE;
+}
+
+enPS6000ThresholdDirection p6000::TriggerDirections(int Dir)
+{
+	switch (Dir)
+	{
+	case 0:
+		return PS6000_ABOVE;
+		break;
+	case 1:
+		return PS6000_ABOVE_LOWER;
+		break;
+	case 2:
+		return PS6000_BELOW;
+		break;
+	case 3:
+		return PS6000_BELOW_LOWER;
+		break;
+	case 4:
+		return PS6000_RISING;
+		break;
+	case 5:
+		return PS6000_RISING_LOWER;
+		break;
+	case 6:
+		return PS6000_FALLING;
+		break;
+	case 7:
+		return PS6000_FALLING_LOWER;
+		break;
+	case 8:
+		return PS6000_RISING_OR_FALLING;
+		break;
+	case 9:
+		return PS6000_INSIDE;
+		break;
+	case 10:
+		return PS6000_OUTSIDE;
+		break;
+	case 11:
+		return PS6000_ENTER;
+		break;
+	case 12:
+		return PS6000_EXIT;
+		break;
+	case 13:
+		return PS6000_ENTER_OR_EXIT;
+		break;
+	case 14:
+		return PS6000_POSITIVE_RUNT;
+		break;
+	case 15:
+		return PS6000_NEGATIVE_RUNT;
+		break;
+	case 16:
+		return PS6000_NONE;
+		break;
+	}
+}
+

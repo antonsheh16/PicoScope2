@@ -78,6 +78,7 @@ public:
 
 	int ChoosenDev;
 	int qweA, qweB, qweC, qweD;
+	int TrigDelay;
 
 	BOOL BusyCopyDataA;
 	BOOL BusyReadingDataA;
@@ -88,7 +89,6 @@ public:
 	BOOL BusyCopyDataD;
 	BOOL BusyReadingDataD;
 
-	
 
 	typedef enum MODEL_TYPE
 	{
@@ -164,17 +164,32 @@ public:
 		PS6000_PULSE_WIDTH_TYPE type;
 	}PWQ;
 
+	int EnablChan[4];
+	struct tPS6000TriggerChannelProperties sourceDetailsA;
+	struct tPS6000TriggerChannelProperties sourceDetailsB;
+	struct tPS6000TriggerChannelProperties sourceDetailsC;
+	struct tPS6000TriggerChannelProperties sourceDetailsD;
+	struct tPwq pulseWidth;
+	struct tTriggerDirections directions;
+	struct tPS6000TriggerConditions conditions;
+
 	BUFFER_INFO bufferInfo;
 	UNIT allUnits[MAX_PICO_DEVICES];
 	
-	PICO_STATUS SetTrigger(int16_t handle, tPS6000TriggerChannelProperties * channelProperties, int16_t nChannelProperties, tPS6000TriggerConditions * triggerConditions, int16_t nTriggerConditions, TRIGGER_DIRECTIONS * directions, tPwq * pwq, uint32_t delay, int16_t auxOutputEnabled, int32_t autoTriggerMs);
+	PICO_STATUS SetTrigger(int16_t handle, int16_t nChannelProperties, tPS6000TriggerConditions * triggerConditions, int16_t nTriggerConditions, TRIGGER_DIRECTIONS * directions, tPwq * pwq, uint32_t delay, int16_t auxOutputEnabled, int32_t autoTriggerMs);
 	p6000(std::string name = "");
 	~p6000();
 	void pick_device(int DevNum);
 	void off();
 	void on();
 	void CollectBlockStr();
+	void CollectBlock();
+	void CollectBlockEts();
 	void StopCollectStr();
+	void TriggerSetup(int trg);
+	int16_t mv_to_adc(int16_t mv, int16_t ch);
+	int32_t adc_to_mv(int32_t raw, int32_t ch);
+	enPS6000ThresholdDirection TriggerDirections(int Dir);
 
 private:
 	int32_t cycles = 0;
@@ -200,12 +215,18 @@ private:
 	uint32_t previousTotal;
 	int16_t     g_timeUnit;
 	uint32_t preTrigger;
+	int32_t timeIndisposed;
+	int16_t		g_ready2;
+	BOOL etsModeSet;
 
+	
 	void StreamDataHandler(UNIT * unit);
+	void BlockDataHandler(UNIT * unit, int32_t offset, int16_t etsModeSet);
 	PICO_STATUS OpenDevice(UNIT * unit, int8_t * serial);
 	std::vector<std::string> enumer(uint16_t openIter, uint16_t devCount);
 	void set_info(UNIT * unit);
 	void checkStatus();
+	void checkStatus(PICO_STATUS status);
 	void CloseDevice(UNIT * unit);
 	PICO_STATUS HandleDevice(UNIT * unit);
 	void SetDefaults(UNIT * unit);

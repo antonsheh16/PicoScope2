@@ -58,28 +58,55 @@ static const char *RcsId = "$Id:  $";
 //  The following table gives the correspondence
 //  between command and method names.
 //
-//  Command name    |  Method name
+//  Command name     |  Method name
 //================================================================
-//  State           |  Inherited (no method)
-//  Status          |  Inherited (no method)
-//  SetDefaults     |  set_defaults
-//  StartStreaming  |  start_streaming
-//  StopStreaming   |  stop_streaming
-//  Update          |  update
-//  On              |  on
-//  Off             |  off
+//  State            |  Inherited (no method)
+//  Status           |  Inherited (no method)
+//  SetDefaults      |  set_defaults
+//  StartStreaming   |  start_streaming
+//  StopStreaming    |  stop_streaming
+//  Update           |  update
+//  On               |  on
+//  Off              |  off
+//  CollectBlock     |  collect_block
+//  SetTrigParamA    |  set_trig_param_a
+//  SetTrigParamB    |  set_trig_param_b
+//  SetTrigParamC    |  set_trig_param_c
+//  SetTrigParamD    |  set_trig_param_d
+//  CollectBlockEts  |  collect_block_ets
 //================================================================
 
 //================================================================
 //  Attributes managed are:
 //================================================================
-//  chanAstream  |  Tango::DevDouble	Scalar
-//  DevChoose    |  Tango::DevDouble	Scalar
-//  DevCh        |  Tango::DevString	Scalar
-//  chanA        |  Tango::DevDouble	Spectrum  ( max = 10000)
-//  chanB        |  Tango::DevDouble	Spectrum  ( max = 10000)
-//  chanC        |  Tango::DevDouble	Spectrum  ( max = 10000)
-//  chanD        |  Tango::DevDouble	Spectrum  ( max = 10000)
+//  chanAstream     |  Tango::DevDouble	Scalar
+//  DevChoose       |  Tango::DevDouble	Scalar
+//  DevCh           |  Tango::DevString	Scalar
+//  TrgCh           |  Tango::DevDouble	Scalar
+//  DevChooseStr    |  Tango::DevDouble	Scalar
+//  ThresholdUp     |  Tango::DevDouble	Scalar
+//  ThresholdLo     |  Tango::DevDouble	Scalar
+//  HysteresisUp    |  Tango::DevDouble	Scalar
+//  HysteresisLo    |  Tango::DevDouble	Scalar
+//  ThresholdMode   |  Tango::DevDouble	Scalar
+//  ChanACond       |  Tango::DevDouble	Scalar
+//  ChanBCond       |  Tango::DevDouble	Scalar
+//  ChanCCond       |  Tango::DevDouble	Scalar
+//  ChanDCond       |  Tango::DevDouble	Scalar
+//  ChanAuxCond     |  Tango::DevDouble	Scalar
+//  ChanPwqCond     |  Tango::DevDouble	Scalar
+//  ChanExtCond     |  Tango::DevDouble	Scalar
+//  ChanATrigDir    |  Tango::DevDouble	Scalar
+//  ChanBTrigDir    |  Tango::DevDouble	Scalar
+//  ChanCTrigDir    |  Tango::DevDouble	Scalar
+//  ChanDTrigDir    |  Tango::DevDouble	Scalar
+//  ChanAuxTrigDir  |  Tango::DevDouble	Scalar
+//  ChanExtTrigDir  |  Tango::DevDouble	Scalar
+//  TrigDelay       |  Tango::DevDouble	Scalar
+//  chanA           |  Tango::DevDouble	Spectrum  ( max = 10000)
+//  chanB           |  Tango::DevDouble	Spectrum  ( max = 10000)
+//  chanC           |  Tango::DevDouble	Spectrum  ( max = 10000)
+//  chanD           |  Tango::DevDouble	Spectrum  ( max = 10000)
 //================================================================
 
 namespace Pico11_ns
@@ -282,6 +309,8 @@ void Pico11::write_DevChoose(Tango::WAttribute &attr)
 	if ((int)(w_val - 1) < pico->Devices.size() + 1 | (int)(w_val - 1) > -1)
 	{
 		pico->pick_device((int)(w_val - 1));
+		CurDev = w_val - 1;
+		set_status("Default Trigger");
 	}
 	//*attr_chanAstream_read = (int)(w_val - 1);
 	//pico.pick_device((int)(w_val - 1));
@@ -305,6 +334,470 @@ void Pico11::read_DevCh(Tango::Attribute &attr)
 	attr.set_value(attr_DevCh_read);
 	
 	/*----- PROTECTED REGION END -----*/	//	Pico11::read_DevCh
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute TrgCh related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void Pico11::write_TrgCh(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "Pico11::write_TrgCh(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevDouble	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(Pico11::write_TrgCh) ENABLED START -----*/
+	if ((int)(w_val) == 0)
+	{
+		pico->TriggerSetup(0);
+		set_status("Default Trigger");
+	}
+	if ((int)(w_val) == 1)
+	{
+		pico->TriggerSetup(1);
+		set_status("Trigger Set");
+	}
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::write_TrgCh
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute DevChooseStr related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void Pico11::write_DevChooseStr(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "Pico11::write_DevChooseStr(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevDouble	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(Pico11::write_DevChooseStr) ENABLED START -----*/
+	
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::write_DevChooseStr
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute ThresholdUp related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void Pico11::write_ThresholdUp(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "Pico11::write_ThresholdUp(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevDouble	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(Pico11::write_ThresholdUp) ENABLED START -----*/
+	threUp = w_val;
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::write_ThresholdUp
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute ThresholdLo related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void Pico11::write_ThresholdLo(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "Pico11::write_ThresholdLo(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevDouble	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(Pico11::write_ThresholdLo) ENABLED START -----*/
+	threLo = w_val;
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::write_ThresholdLo
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute HysteresisUp related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void Pico11::write_HysteresisUp(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "Pico11::write_HysteresisUp(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevDouble	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(Pico11::write_HysteresisUp) ENABLED START -----*/
+	hystUp = w_val;
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::write_HysteresisUp
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute HysteresisLo related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void Pico11::write_HysteresisLo(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "Pico11::write_HysteresisLo(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevDouble	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(Pico11::write_HysteresisLo) ENABLED START -----*/
+	hystLo = w_val;
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::write_HysteresisLo
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute ThresholdMode related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void Pico11::write_ThresholdMode(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "Pico11::write_ThresholdMode(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevDouble	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(Pico11::write_ThresholdMode) ENABLED START -----*/
+	threMode = w_val;
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::write_ThresholdMode
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute ChanACond related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void Pico11::write_ChanACond(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "Pico11::write_ChanACond(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevDouble	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(Pico11::write_ChanACond) ENABLED START -----*/
+	if (w_val = 0)
+		pico->conditions.channelA = PS6000_CONDITION_DONT_CARE;
+	if (w_val = 1)
+		pico->conditions.channelA = PS6000_CONDITION_TRUE;
+	if (w_val = 2)
+		pico->conditions.channelA = PS6000_CONDITION_FALSE;
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::write_ChanACond
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute ChanBCond related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void Pico11::write_ChanBCond(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "Pico11::write_ChanBCond(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevDouble	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(Pico11::write_ChanBCond) ENABLED START -----*/
+	if (w_val = 0)
+		pico->conditions.channelB = PS6000_CONDITION_DONT_CARE;
+	if (w_val = 1)
+		pico->conditions.channelB = PS6000_CONDITION_TRUE;
+	if (w_val = 2)
+		pico->conditions.channelB = PS6000_CONDITION_FALSE;
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::write_ChanBCond
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute ChanCCond related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void Pico11::write_ChanCCond(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "Pico11::write_ChanCCond(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevDouble	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(Pico11::write_ChanCCond) ENABLED START -----*/
+	if (w_val = 0)
+		pico->conditions.channelC = PS6000_CONDITION_DONT_CARE;
+	if (w_val = 1)
+		pico->conditions.channelC = PS6000_CONDITION_TRUE;
+	if (w_val = 2)
+		pico->conditions.channelC = PS6000_CONDITION_FALSE;
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::write_ChanCCond
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute ChanDCond related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void Pico11::write_ChanDCond(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "Pico11::write_ChanDCond(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevDouble	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(Pico11::write_ChanDCond) ENABLED START -----*/
+	if (w_val = 0)
+		pico->conditions.channelD = PS6000_CONDITION_DONT_CARE;
+	if (w_val = 1)
+		pico->conditions.channelD = PS6000_CONDITION_TRUE;
+	if (w_val = 2)
+		pico->conditions.channelD = PS6000_CONDITION_FALSE;
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::write_ChanDCond
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute ChanAuxCond related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void Pico11::write_ChanAuxCond(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "Pico11::write_ChanAuxCond(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevDouble	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(Pico11::write_ChanAuxCond) ENABLED START -----*/
+	if (w_val = 0)
+		pico->conditions.aux = PS6000_CONDITION_DONT_CARE;
+	if (w_val = 1)
+		pico->conditions.aux = PS6000_CONDITION_TRUE;
+	if (w_val = 2)
+		pico->conditions.aux = PS6000_CONDITION_FALSE;
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::write_ChanAuxCond
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute ChanPwqCond related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void Pico11::write_ChanPwqCond(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "Pico11::write_ChanPwqCond(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevDouble	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(Pico11::write_ChanPwqCond) ENABLED START -----*/
+	if (w_val = 0)
+		pico->conditions.pulseWidthQualifier = PS6000_CONDITION_DONT_CARE;
+	if (w_val = 1)
+		pico->conditions.pulseWidthQualifier = PS6000_CONDITION_TRUE;
+	if (w_val = 2)
+		pico->conditions.pulseWidthQualifier = PS6000_CONDITION_FALSE;
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::write_ChanPwqCond
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute ChanExtCond related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void Pico11::write_ChanExtCond(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "Pico11::write_ChanExtCond(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevDouble	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(Pico11::write_ChanExtCond) ENABLED START -----*/
+	if (w_val = 0)
+		pico->conditions.external = PS6000_CONDITION_DONT_CARE;
+	if (w_val = 1)
+		pico->conditions.external = PS6000_CONDITION_TRUE;
+	if (w_val = 2)
+		pico->conditions.external = PS6000_CONDITION_FALSE;
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::write_ChanExtCond
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute ChanATrigDir related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void Pico11::write_ChanATrigDir(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "Pico11::write_ChanATrigDir(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevDouble	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(Pico11::write_ChanATrigDir) ENABLED START -----*/
+	pico->directions.channelA = pico->TriggerDirections(w_val);
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::write_ChanATrigDir
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute ChanBTrigDir related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void Pico11::write_ChanBTrigDir(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "Pico11::write_ChanBTrigDir(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevDouble	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(Pico11::write_ChanBTrigDir) ENABLED START -----*/
+	pico->directions.channelB = pico->TriggerDirections(w_val);
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::write_ChanBTrigDir
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute ChanCTrigDir related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void Pico11::write_ChanCTrigDir(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "Pico11::write_ChanCTrigDir(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevDouble	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(Pico11::write_ChanCTrigDir) ENABLED START -----*/
+	pico->directions.channelC = pico->TriggerDirections(w_val);
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::write_ChanCTrigDir
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute ChanDTrigDir related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void Pico11::write_ChanDTrigDir(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "Pico11::write_ChanDTrigDir(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevDouble	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(Pico11::write_ChanDTrigDir) ENABLED START -----*/
+	pico->directions.channelD = pico->TriggerDirections(w_val);
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::write_ChanDTrigDir
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute ChanAuxTrigDir related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void Pico11::write_ChanAuxTrigDir(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "Pico11::write_ChanAuxTrigDir(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevDouble	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(Pico11::write_ChanAuxTrigDir) ENABLED START -----*/
+	pico->directions.aux = pico->TriggerDirections(w_val);
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::write_ChanAuxTrigDir
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute ChanExtTrigDir related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void Pico11::write_ChanExtTrigDir(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "Pico11::write_ChanExtTrigDir(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevDouble	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(Pico11::write_ChanExtTrigDir) ENABLED START -----*/
+	pico->directions.ext = pico->TriggerDirections(w_val);
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::write_ChanExtTrigDir
+}
+//--------------------------------------------------------
+/**
+ *	Write attribute TrigDelay related method
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+//--------------------------------------------------------
+void Pico11::write_TrigDelay(Tango::WAttribute &attr)
+{
+	DEBUG_STREAM << "Pico11::write_TrigDelay(Tango::WAttribute &attr) entering... " << endl;
+	//	Retrieve write value
+	Tango::DevDouble	w_val;
+	attr.get_write_value(w_val);
+	/*----- PROTECTED REGION ID(Pico11::write_TrigDelay) ENABLED START -----*/
+	pico->TrigDelay = w_val;
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::write_TrigDelay
 }
 //--------------------------------------------------------
 /**
@@ -426,7 +919,7 @@ void Pico11::start_streaming()
 	
 	//	Add your own code
 	pico->CollectBlockStr();
-	set_status("RUNNING");
+	
 
 
 	/*----- PROTECTED REGION END -----*/	//	Pico11::start_streaming
@@ -468,7 +961,6 @@ void Pico11::update()
 	if (!BusyCopyA)
 	{
 		pico->BusyReadingDataA = TRUE;
-		
 		chanA.reserve(chanA.size() + pico->chanAT.size());
 		chanA.insert(chanA.end(), pico->chanAT.begin(), pico->chanAT.end());
 		pico->chanAT.clear();
@@ -540,6 +1032,138 @@ void Pico11::off()
 	//	Add your own code
 	pico->off();
 	/*----- PROTECTED REGION END -----*/	//	Pico11::off
+}
+//--------------------------------------------------------
+/**
+ *	Command CollectBlock related method
+ *	Description: 
+ *
+ */
+//--------------------------------------------------------
+void Pico11::collect_block()
+{
+	DEBUG_STREAM << "Pico11::CollectBlock()  - " << device_name << endl;
+	/*----- PROTECTED REGION ID(Pico11::collect_block) ENABLED START -----*/
+	pico->CollectBlock();
+	//	Add your own code
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::collect_block
+}
+//--------------------------------------------------------
+/**
+ *	Command SetTrigParamA related method
+ *	Description: 
+ *
+ */
+//--------------------------------------------------------
+void Pico11::set_trig_param_a()
+{
+	DEBUG_STREAM << "Pico11::SetTrigParamA()  - " << device_name << endl;
+	/*----- PROTECTED REGION ID(Pico11::set_trig_param_a) ENABLED START -----*/
+	pico->sourceDetailsA.thresholdUpper = pico->mv_to_adc(threUp, pico->allUnits[CurDev].channelSettings[0].range);
+	pico->sourceDetailsA.hysteresisUpper = hystUp;
+	pico->sourceDetailsA.thresholdLower = pico->mv_to_adc(threLo, pico->allUnits[CurDev].channelSettings[0].range);
+	pico->sourceDetailsA.hysteresisLower = hystLo;
+	pico->sourceDetailsA.channel = PS6000_CHANNEL_A;
+	if (threMode == 0)
+		pico->sourceDetailsA.thresholdMode = PS6000_LEVEL;
+	if (threMode == 1)
+		pico->sourceDetailsA.thresholdMode = PS6000_WINDOW;
+	pico->EnablChan[0] = 1;
+	//	Add your own code
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::set_trig_param_a
+}
+//--------------------------------------------------------
+/**
+ *	Command SetTrigParamB related method
+ *	Description: 
+ *
+ */
+//--------------------------------------------------------
+void Pico11::set_trig_param_b()
+{
+	DEBUG_STREAM << "Pico11::SetTrigParamB()  - " << device_name << endl;
+	/*----- PROTECTED REGION ID(Pico11::set_trig_param_b) ENABLED START -----*/
+	pico->sourceDetailsB.thresholdUpper = pico->mv_to_adc(threUp, pico->allUnits[CurDev].channelSettings[0].range);
+	pico->sourceDetailsB.hysteresisUpper = hystUp;
+	pico->sourceDetailsB.thresholdLower = pico->mv_to_adc(threLo, pico->allUnits[CurDev].channelSettings[0].range);
+	pico->sourceDetailsB.hysteresisLower = hystLo;
+	pico->sourceDetailsB.channel = PS6000_CHANNEL_A;
+	if (threMode == 0)
+		pico->sourceDetailsB.thresholdMode = PS6000_LEVEL;
+	if (threMode == 1)
+		pico->sourceDetailsB.thresholdMode = PS6000_WINDOW;
+	pico->EnablChan[1] = 1;
+	//	Add your own code
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::set_trig_param_b
+}
+//--------------------------------------------------------
+/**
+ *	Command SetTrigParamC related method
+ *	Description: 
+ *
+ */
+//--------------------------------------------------------
+void Pico11::set_trig_param_c()
+{
+	DEBUG_STREAM << "Pico11::SetTrigParamC()  - " << device_name << endl;
+	/*----- PROTECTED REGION ID(Pico11::set_trig_param_c) ENABLED START -----*/
+	pico->sourceDetailsC.thresholdUpper = pico->mv_to_adc(threUp, pico->allUnits[CurDev].channelSettings[0].range);
+	pico->sourceDetailsC.hysteresisUpper = hystUp;
+	pico->sourceDetailsC.thresholdLower = pico->mv_to_adc(threLo, pico->allUnits[CurDev].channelSettings[0].range);
+	pico->sourceDetailsC.hysteresisLower = hystLo;
+	pico->sourceDetailsC.channel = PS6000_CHANNEL_A;
+	if (threMode == 0)
+		pico->sourceDetailsC.thresholdMode = PS6000_LEVEL;
+	if (threMode == 1)
+		pico->sourceDetailsC.thresholdMode = PS6000_WINDOW;
+	pico->EnablChan[2] = 1;
+	//	Add your own code
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::set_trig_param_c
+}
+//--------------------------------------------------------
+/**
+ *	Command SetTrigParamD related method
+ *	Description: 
+ *
+ */
+//--------------------------------------------------------
+void Pico11::set_trig_param_d()
+{
+	DEBUG_STREAM << "Pico11::SetTrigParamD()  - " << device_name << endl;
+	/*----- PROTECTED REGION ID(Pico11::set_trig_param_d) ENABLED START -----*/
+	pico->sourceDetailsD.thresholdUpper = pico->mv_to_adc(threUp, pico->allUnits[CurDev].channelSettings[0].range);
+	pico->sourceDetailsD.hysteresisUpper = hystUp;
+	pico->sourceDetailsD.thresholdLower = pico->mv_to_adc(threLo, pico->allUnits[CurDev].channelSettings[0].range);
+	pico->sourceDetailsD.hysteresisLower = hystLo;
+	pico->sourceDetailsD.channel = PS6000_CHANNEL_A;
+	if (threMode == 0)
+		pico->sourceDetailsD.thresholdMode = PS6000_LEVEL;
+	if (threMode == 1)
+		pico->sourceDetailsD.thresholdMode = PS6000_WINDOW;
+	pico->EnablChan[3] = 1;
+	//	Add your own code
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::set_trig_param_d
+}
+//--------------------------------------------------------
+/**
+ *	Command CollectBlockEts related method
+ *	Description: 
+ *
+ */
+//--------------------------------------------------------
+void Pico11::collect_block_ets()
+{
+	DEBUG_STREAM << "Pico11::CollectBlockEts()  - " << device_name << endl;
+	/*----- PROTECTED REGION ID(Pico11::collect_block_ets) ENABLED START -----*/
+	pico->CollectBlockEts();
+	//	Add your own code
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::collect_block_ets
 }
 //--------------------------------------------------------
 /**

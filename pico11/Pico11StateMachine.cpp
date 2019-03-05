@@ -105,6 +105,342 @@ bool Pico11::is_DevCh_allowed(TANGO_UNUSED(Tango::AttReqType type))
 
 //--------------------------------------------------------
 /**
+ *	Method      : Pico11::is_TrgCh_allowed()
+ *	Description : Execution allowed for TrgCh attribute
+ */
+//--------------------------------------------------------
+bool Pico11::is_TrgCh_allowed(TANGO_UNUSED(Tango::AttReqType type))
+{
+	//	Not any excluded states for TrgCh attribute in Write access.
+	/*----- PROTECTED REGION ID(Pico11::TrgChStateAllowed_WRITE) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::TrgChStateAllowed_WRITE
+
+	return true;
+}
+
+//--------------------------------------------------------
+/**
+ *	Method      : Pico11::is_DevChooseStr_allowed()
+ *	Description : Execution allowed for DevChooseStr attribute
+ */
+//--------------------------------------------------------
+bool Pico11::is_DevChooseStr_allowed(TANGO_UNUSED(Tango::AttReqType type))
+{
+	//	Not any excluded states for DevChooseStr attribute in Write access.
+	/*----- PROTECTED REGION ID(Pico11::DevChooseStrStateAllowed_WRITE) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::DevChooseStrStateAllowed_WRITE
+
+	return true;
+}
+
+//--------------------------------------------------------
+/**
+ *	Method      : Pico11::is_ThresholdUp_allowed()
+ *	Description : Execution allowed for ThresholdUp attribute
+ */
+//--------------------------------------------------------
+bool Pico11::is_ThresholdUp_allowed(TANGO_UNUSED(Tango::AttReqType type))
+{
+	//	Not any excluded states for ThresholdUp attribute in Write access.
+	/*----- PROTECTED REGION ID(Pico11::ThresholdUpStateAllowed_WRITE) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::ThresholdUpStateAllowed_WRITE
+
+	return true;
+}
+
+//--------------------------------------------------------
+/**
+ *	Method      : Pico11::is_ThresholdLo_allowed()
+ *	Description : Execution allowed for ThresholdLo attribute
+ */
+//--------------------------------------------------------
+bool Pico11::is_ThresholdLo_allowed(TANGO_UNUSED(Tango::AttReqType type))
+{
+	//	Not any excluded states for ThresholdLo attribute in Write access.
+	/*----- PROTECTED REGION ID(Pico11::ThresholdLoStateAllowed_WRITE) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::ThresholdLoStateAllowed_WRITE
+
+	return true;
+}
+
+//--------------------------------------------------------
+/**
+ *	Method      : Pico11::is_HysteresisUp_allowed()
+ *	Description : Execution allowed for HysteresisUp attribute
+ */
+//--------------------------------------------------------
+bool Pico11::is_HysteresisUp_allowed(TANGO_UNUSED(Tango::AttReqType type))
+{
+	//	Not any excluded states for HysteresisUp attribute in Write access.
+	/*----- PROTECTED REGION ID(Pico11::HysteresisUpStateAllowed_WRITE) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::HysteresisUpStateAllowed_WRITE
+
+	return true;
+}
+
+//--------------------------------------------------------
+/**
+ *	Method      : Pico11::is_HysteresisLo_allowed()
+ *	Description : Execution allowed for HysteresisLo attribute
+ */
+//--------------------------------------------------------
+bool Pico11::is_HysteresisLo_allowed(TANGO_UNUSED(Tango::AttReqType type))
+{
+	//	Not any excluded states for HysteresisLo attribute in Write access.
+	/*----- PROTECTED REGION ID(Pico11::HysteresisLoStateAllowed_WRITE) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::HysteresisLoStateAllowed_WRITE
+
+	return true;
+}
+
+//--------------------------------------------------------
+/**
+ *	Method      : Pico11::is_ThresholdMode_allowed()
+ *	Description : Execution allowed for ThresholdMode attribute
+ */
+//--------------------------------------------------------
+bool Pico11::is_ThresholdMode_allowed(TANGO_UNUSED(Tango::AttReqType type))
+{
+	//	Not any excluded states for ThresholdMode attribute in Write access.
+	/*----- PROTECTED REGION ID(Pico11::ThresholdModeStateAllowed_WRITE) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::ThresholdModeStateAllowed_WRITE
+
+	return true;
+}
+
+//--------------------------------------------------------
+/**
+ *	Method      : Pico11::is_ChanACond_allowed()
+ *	Description : Execution allowed for ChanACond attribute
+ */
+//--------------------------------------------------------
+bool Pico11::is_ChanACond_allowed(TANGO_UNUSED(Tango::AttReqType type))
+{
+	//	Not any excluded states for ChanACond attribute in Write access.
+	/*----- PROTECTED REGION ID(Pico11::ChanACondStateAllowed_WRITE) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::ChanACondStateAllowed_WRITE
+
+	return true;
+}
+
+//--------------------------------------------------------
+/**
+ *	Method      : Pico11::is_ChanBCond_allowed()
+ *	Description : Execution allowed for ChanBCond attribute
+ */
+//--------------------------------------------------------
+bool Pico11::is_ChanBCond_allowed(TANGO_UNUSED(Tango::AttReqType type))
+{
+	//	Not any excluded states for ChanBCond attribute in Write access.
+	/*----- PROTECTED REGION ID(Pico11::ChanBCondStateAllowed_WRITE) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::ChanBCondStateAllowed_WRITE
+
+	return true;
+}
+
+//--------------------------------------------------------
+/**
+ *	Method      : Pico11::is_ChanCCond_allowed()
+ *	Description : Execution allowed for ChanCCond attribute
+ */
+//--------------------------------------------------------
+bool Pico11::is_ChanCCond_allowed(TANGO_UNUSED(Tango::AttReqType type))
+{
+	//	Not any excluded states for ChanCCond attribute in Write access.
+	/*----- PROTECTED REGION ID(Pico11::ChanCCondStateAllowed_WRITE) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::ChanCCondStateAllowed_WRITE
+
+	return true;
+}
+
+//--------------------------------------------------------
+/**
+ *	Method      : Pico11::is_ChanDCond_allowed()
+ *	Description : Execution allowed for ChanDCond attribute
+ */
+//--------------------------------------------------------
+bool Pico11::is_ChanDCond_allowed(TANGO_UNUSED(Tango::AttReqType type))
+{
+	//	Not any excluded states for ChanDCond attribute in Write access.
+	/*----- PROTECTED REGION ID(Pico11::ChanDCondStateAllowed_WRITE) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::ChanDCondStateAllowed_WRITE
+
+	return true;
+}
+
+//--------------------------------------------------------
+/**
+ *	Method      : Pico11::is_ChanAuxCond_allowed()
+ *	Description : Execution allowed for ChanAuxCond attribute
+ */
+//--------------------------------------------------------
+bool Pico11::is_ChanAuxCond_allowed(TANGO_UNUSED(Tango::AttReqType type))
+{
+	//	Not any excluded states for ChanAuxCond attribute in Write access.
+	/*----- PROTECTED REGION ID(Pico11::ChanAuxCondStateAllowed_WRITE) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::ChanAuxCondStateAllowed_WRITE
+
+	return true;
+}
+
+//--------------------------------------------------------
+/**
+ *	Method      : Pico11::is_ChanPwqCond_allowed()
+ *	Description : Execution allowed for ChanPwqCond attribute
+ */
+//--------------------------------------------------------
+bool Pico11::is_ChanPwqCond_allowed(TANGO_UNUSED(Tango::AttReqType type))
+{
+	//	Not any excluded states for ChanPwqCond attribute in Write access.
+	/*----- PROTECTED REGION ID(Pico11::ChanPwqCondStateAllowed_WRITE) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::ChanPwqCondStateAllowed_WRITE
+
+	return true;
+}
+
+//--------------------------------------------------------
+/**
+ *	Method      : Pico11::is_ChanExtCond_allowed()
+ *	Description : Execution allowed for ChanExtCond attribute
+ */
+//--------------------------------------------------------
+bool Pico11::is_ChanExtCond_allowed(TANGO_UNUSED(Tango::AttReqType type))
+{
+	//	Not any excluded states for ChanExtCond attribute in Write access.
+	/*----- PROTECTED REGION ID(Pico11::ChanExtCondStateAllowed_WRITE) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::ChanExtCondStateAllowed_WRITE
+
+	return true;
+}
+
+//--------------------------------------------------------
+/**
+ *	Method      : Pico11::is_ChanATrigDir_allowed()
+ *	Description : Execution allowed for ChanATrigDir attribute
+ */
+//--------------------------------------------------------
+bool Pico11::is_ChanATrigDir_allowed(TANGO_UNUSED(Tango::AttReqType type))
+{
+	//	Not any excluded states for ChanATrigDir attribute in Write access.
+	/*----- PROTECTED REGION ID(Pico11::ChanATrigDirStateAllowed_WRITE) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::ChanATrigDirStateAllowed_WRITE
+
+	return true;
+}
+
+//--------------------------------------------------------
+/**
+ *	Method      : Pico11::is_ChanBTrigDir_allowed()
+ *	Description : Execution allowed for ChanBTrigDir attribute
+ */
+//--------------------------------------------------------
+bool Pico11::is_ChanBTrigDir_allowed(TANGO_UNUSED(Tango::AttReqType type))
+{
+	//	Not any excluded states for ChanBTrigDir attribute in Write access.
+	/*----- PROTECTED REGION ID(Pico11::ChanBTrigDirStateAllowed_WRITE) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::ChanBTrigDirStateAllowed_WRITE
+
+	return true;
+}
+
+//--------------------------------------------------------
+/**
+ *	Method      : Pico11::is_ChanCTrigDir_allowed()
+ *	Description : Execution allowed for ChanCTrigDir attribute
+ */
+//--------------------------------------------------------
+bool Pico11::is_ChanCTrigDir_allowed(TANGO_UNUSED(Tango::AttReqType type))
+{
+	//	Not any excluded states for ChanCTrigDir attribute in Write access.
+	/*----- PROTECTED REGION ID(Pico11::ChanCTrigDirStateAllowed_WRITE) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::ChanCTrigDirStateAllowed_WRITE
+
+	return true;
+}
+
+//--------------------------------------------------------
+/**
+ *	Method      : Pico11::is_ChanDTrigDir_allowed()
+ *	Description : Execution allowed for ChanDTrigDir attribute
+ */
+//--------------------------------------------------------
+bool Pico11::is_ChanDTrigDir_allowed(TANGO_UNUSED(Tango::AttReqType type))
+{
+	//	Not any excluded states for ChanDTrigDir attribute in Write access.
+	/*----- PROTECTED REGION ID(Pico11::ChanDTrigDirStateAllowed_WRITE) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::ChanDTrigDirStateAllowed_WRITE
+
+	return true;
+}
+
+//--------------------------------------------------------
+/**
+ *	Method      : Pico11::is_ChanAuxTrigDir_allowed()
+ *	Description : Execution allowed for ChanAuxTrigDir attribute
+ */
+//--------------------------------------------------------
+bool Pico11::is_ChanAuxTrigDir_allowed(TANGO_UNUSED(Tango::AttReqType type))
+{
+	//	Not any excluded states for ChanAuxTrigDir attribute in Write access.
+	/*----- PROTECTED REGION ID(Pico11::ChanAuxTrigDirStateAllowed_WRITE) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::ChanAuxTrigDirStateAllowed_WRITE
+
+	return true;
+}
+
+//--------------------------------------------------------
+/**
+ *	Method      : Pico11::is_ChanExtTrigDir_allowed()
+ *	Description : Execution allowed for ChanExtTrigDir attribute
+ */
+//--------------------------------------------------------
+bool Pico11::is_ChanExtTrigDir_allowed(TANGO_UNUSED(Tango::AttReqType type))
+{
+	//	Not any excluded states for ChanExtTrigDir attribute in Write access.
+	/*----- PROTECTED REGION ID(Pico11::ChanExtTrigDirStateAllowed_WRITE) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::ChanExtTrigDirStateAllowed_WRITE
+
+	return true;
+}
+
+//--------------------------------------------------------
+/**
+ *	Method      : Pico11::is_TrigDelay_allowed()
+ *	Description : Execution allowed for TrigDelay attribute
+ */
+//--------------------------------------------------------
+bool Pico11::is_TrigDelay_allowed(TANGO_UNUSED(Tango::AttReqType type))
+{
+	//	Not any excluded states for TrigDelay attribute in Write access.
+	/*----- PROTECTED REGION ID(Pico11::TrigDelayStateAllowed_WRITE) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::TrigDelayStateAllowed_WRITE
+
+	return true;
+}
+
+//--------------------------------------------------------
+/**
  *	Method      : Pico11::is_chanA_allowed()
  *	Description : Execution allowed for chanA attribute
  */
@@ -259,6 +595,96 @@ bool Pico11::is_Off_allowed(TANGO_UNUSED(const CORBA::Any &any))
 	/*----- PROTECTED REGION ID(Pico11::OffStateAllowed) ENABLED START -----*/
 	
 	/*----- PROTECTED REGION END -----*/	//	Pico11::OffStateAllowed
+	return true;
+}
+
+//--------------------------------------------------------
+/**
+ *	Method      : Pico11::is_CollectBlock_allowed()
+ *	Description : Execution allowed for CollectBlock attribute
+ */
+//--------------------------------------------------------
+bool Pico11::is_CollectBlock_allowed(TANGO_UNUSED(const CORBA::Any &any))
+{
+	//	Not any excluded states for CollectBlock command.
+	/*----- PROTECTED REGION ID(Pico11::CollectBlockStateAllowed) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::CollectBlockStateAllowed
+	return true;
+}
+
+//--------------------------------------------------------
+/**
+ *	Method      : Pico11::is_SetTrigParamA_allowed()
+ *	Description : Execution allowed for SetTrigParamA attribute
+ */
+//--------------------------------------------------------
+bool Pico11::is_SetTrigParamA_allowed(TANGO_UNUSED(const CORBA::Any &any))
+{
+	//	Not any excluded states for SetTrigParamA command.
+	/*----- PROTECTED REGION ID(Pico11::SetTrigParamAStateAllowed) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::SetTrigParamAStateAllowed
+	return true;
+}
+
+//--------------------------------------------------------
+/**
+ *	Method      : Pico11::is_SetTrigParamB_allowed()
+ *	Description : Execution allowed for SetTrigParamB attribute
+ */
+//--------------------------------------------------------
+bool Pico11::is_SetTrigParamB_allowed(TANGO_UNUSED(const CORBA::Any &any))
+{
+	//	Not any excluded states for SetTrigParamB command.
+	/*----- PROTECTED REGION ID(Pico11::SetTrigParamBStateAllowed) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::SetTrigParamBStateAllowed
+	return true;
+}
+
+//--------------------------------------------------------
+/**
+ *	Method      : Pico11::is_SetTrigParamC_allowed()
+ *	Description : Execution allowed for SetTrigParamC attribute
+ */
+//--------------------------------------------------------
+bool Pico11::is_SetTrigParamC_allowed(TANGO_UNUSED(const CORBA::Any &any))
+{
+	//	Not any excluded states for SetTrigParamC command.
+	/*----- PROTECTED REGION ID(Pico11::SetTrigParamCStateAllowed) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::SetTrigParamCStateAllowed
+	return true;
+}
+
+//--------------------------------------------------------
+/**
+ *	Method      : Pico11::is_SetTrigParamD_allowed()
+ *	Description : Execution allowed for SetTrigParamD attribute
+ */
+//--------------------------------------------------------
+bool Pico11::is_SetTrigParamD_allowed(TANGO_UNUSED(const CORBA::Any &any))
+{
+	//	Not any excluded states for SetTrigParamD command.
+	/*----- PROTECTED REGION ID(Pico11::SetTrigParamDStateAllowed) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::SetTrigParamDStateAllowed
+	return true;
+}
+
+//--------------------------------------------------------
+/**
+ *	Method      : Pico11::is_CollectBlockEts_allowed()
+ *	Description : Execution allowed for CollectBlockEts attribute
+ */
+//--------------------------------------------------------
+bool Pico11::is_CollectBlockEts_allowed(TANGO_UNUSED(const CORBA::Any &any))
+{
+	//	Not any excluded states for CollectBlockEts command.
+	/*----- PROTECTED REGION ID(Pico11::CollectBlockEtsStateAllowed) ENABLED START -----*/
+	
+	/*----- PROTECTED REGION END -----*/	//	Pico11::CollectBlockEtsStateAllowed
 	return true;
 }
 

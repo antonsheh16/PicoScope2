@@ -66,6 +66,10 @@ class Pico11 : public TANGO_BASE_CLASS
 
 /*----- PROTECTED REGION ID(Pico11::Data Members) ENABLED START -----*/
 public:
+	vector<double> chanA;
+	vector<double> chanB;
+	vector<double> chanC;
+	vector<double> chanD;
 
 
 private:
@@ -76,11 +80,12 @@ private:
 	BOOL BusyCopyB;
 	BOOL BusyCopyC;
 	BOOL BusyCopyD;
+	int CurDev;
 
-	vector<double> chanA;
-	vector<double> chanB;
-	vector<double> chanC;
-	vector<double> chanD;
+	double threUp, threLo, hystUp, hystLo;
+	double threMode;
+
+	
 //	Add your own data members
 	
 
@@ -187,6 +192,195 @@ public:
 	virtual void read_DevCh(Tango::Attribute &attr);
 	virtual bool is_DevCh_allowed(Tango::AttReqType type);
 /**
+ *	Attribute TrgCh related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+	virtual void write_TrgCh(Tango::WAttribute &attr);
+	virtual bool is_TrgCh_allowed(Tango::AttReqType type);
+/**
+ *	Attribute DevChooseStr related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+	virtual void write_DevChooseStr(Tango::WAttribute &attr);
+	virtual bool is_DevChooseStr_allowed(Tango::AttReqType type);
+/**
+ *	Attribute ThresholdUp related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+	virtual void write_ThresholdUp(Tango::WAttribute &attr);
+	virtual bool is_ThresholdUp_allowed(Tango::AttReqType type);
+/**
+ *	Attribute ThresholdLo related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+	virtual void write_ThresholdLo(Tango::WAttribute &attr);
+	virtual bool is_ThresholdLo_allowed(Tango::AttReqType type);
+/**
+ *	Attribute HysteresisUp related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+	virtual void write_HysteresisUp(Tango::WAttribute &attr);
+	virtual bool is_HysteresisUp_allowed(Tango::AttReqType type);
+/**
+ *	Attribute HysteresisLo related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+	virtual void write_HysteresisLo(Tango::WAttribute &attr);
+	virtual bool is_HysteresisLo_allowed(Tango::AttReqType type);
+/**
+ *	Attribute ThresholdMode related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+	virtual void write_ThresholdMode(Tango::WAttribute &attr);
+	virtual bool is_ThresholdMode_allowed(Tango::AttReqType type);
+/**
+ *	Attribute ChanACond related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+	virtual void write_ChanACond(Tango::WAttribute &attr);
+	virtual bool is_ChanACond_allowed(Tango::AttReqType type);
+/**
+ *	Attribute ChanBCond related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+	virtual void write_ChanBCond(Tango::WAttribute &attr);
+	virtual bool is_ChanBCond_allowed(Tango::AttReqType type);
+/**
+ *	Attribute ChanCCond related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+	virtual void write_ChanCCond(Tango::WAttribute &attr);
+	virtual bool is_ChanCCond_allowed(Tango::AttReqType type);
+/**
+ *	Attribute ChanDCond related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+	virtual void write_ChanDCond(Tango::WAttribute &attr);
+	virtual bool is_ChanDCond_allowed(Tango::AttReqType type);
+/**
+ *	Attribute ChanAuxCond related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+	virtual void write_ChanAuxCond(Tango::WAttribute &attr);
+	virtual bool is_ChanAuxCond_allowed(Tango::AttReqType type);
+/**
+ *	Attribute ChanPwqCond related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+	virtual void write_ChanPwqCond(Tango::WAttribute &attr);
+	virtual bool is_ChanPwqCond_allowed(Tango::AttReqType type);
+/**
+ *	Attribute ChanExtCond related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+	virtual void write_ChanExtCond(Tango::WAttribute &attr);
+	virtual bool is_ChanExtCond_allowed(Tango::AttReqType type);
+/**
+ *	Attribute ChanATrigDir related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+	virtual void write_ChanATrigDir(Tango::WAttribute &attr);
+	virtual bool is_ChanATrigDir_allowed(Tango::AttReqType type);
+/**
+ *	Attribute ChanBTrigDir related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+	virtual void write_ChanBTrigDir(Tango::WAttribute &attr);
+	virtual bool is_ChanBTrigDir_allowed(Tango::AttReqType type);
+/**
+ *	Attribute ChanCTrigDir related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+	virtual void write_ChanCTrigDir(Tango::WAttribute &attr);
+	virtual bool is_ChanCTrigDir_allowed(Tango::AttReqType type);
+/**
+ *	Attribute ChanDTrigDir related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+	virtual void write_ChanDTrigDir(Tango::WAttribute &attr);
+	virtual bool is_ChanDTrigDir_allowed(Tango::AttReqType type);
+/**
+ *	Attribute ChanAuxTrigDir related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+	virtual void write_ChanAuxTrigDir(Tango::WAttribute &attr);
+	virtual bool is_ChanAuxTrigDir_allowed(Tango::AttReqType type);
+/**
+ *	Attribute ChanExtTrigDir related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+	virtual void write_ChanExtTrigDir(Tango::WAttribute &attr);
+	virtual bool is_ChanExtTrigDir_allowed(Tango::AttReqType type);
+/**
+ *	Attribute TrigDelay related methods
+ *	Description: 
+ *
+ *	Data type:	Tango::DevDouble
+ *	Attr type:	Scalar
+ */
+	virtual void write_TrigDelay(Tango::WAttribute &attr);
+	virtual bool is_TrigDelay_allowed(Tango::AttReqType type);
+/**
  *	Attribute chanA related methods
  *	Description: 
  *
@@ -279,6 +473,48 @@ public:
 	 */
 	virtual void off();
 	virtual bool is_Off_allowed(const CORBA::Any &any);
+	/**
+	 *	Command CollectBlock related method
+	 *	Description: 
+	 *
+	 */
+	virtual void collect_block();
+	virtual bool is_CollectBlock_allowed(const CORBA::Any &any);
+	/**
+	 *	Command SetTrigParamA related method
+	 *	Description: 
+	 *
+	 */
+	virtual void set_trig_param_a();
+	virtual bool is_SetTrigParamA_allowed(const CORBA::Any &any);
+	/**
+	 *	Command SetTrigParamB related method
+	 *	Description: 
+	 *
+	 */
+	virtual void set_trig_param_b();
+	virtual bool is_SetTrigParamB_allowed(const CORBA::Any &any);
+	/**
+	 *	Command SetTrigParamC related method
+	 *	Description: 
+	 *
+	 */
+	virtual void set_trig_param_c();
+	virtual bool is_SetTrigParamC_allowed(const CORBA::Any &any);
+	/**
+	 *	Command SetTrigParamD related method
+	 *	Description: 
+	 *
+	 */
+	virtual void set_trig_param_d();
+	virtual bool is_SetTrigParamD_allowed(const CORBA::Any &any);
+	/**
+	 *	Command CollectBlockEts related method
+	 *	Description: 
+	 *
+	 */
+	virtual void collect_block_ets();
+	virtual bool is_CollectBlockEts_allowed(const CORBA::Any &any);
 
 
 	//--------------------------------------------------------

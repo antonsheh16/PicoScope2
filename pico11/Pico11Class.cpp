@@ -267,6 +267,114 @@ CORBA::Any *OffClass::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORB
 	return new CORBA::Any();
 }
 
+//--------------------------------------------------------
+/**
+ * method : 		CollectBlockClass::execute()
+ * description : 	method to trigger the execution of the command.
+ *
+ * @param	device	The device on which the command must be executed
+ * @param	in_any	The command input data
+ *
+ *	returns The command output data (packed in the Any object)
+ */
+//--------------------------------------------------------
+CORBA::Any *CollectBlockClass::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
+{
+	cout2 << "CollectBlockClass::execute(): arrived" << endl;
+	((static_cast<Pico11 *>(device))->collect_block());
+	return new CORBA::Any();
+}
+
+//--------------------------------------------------------
+/**
+ * method : 		SetTrigParamAClass::execute()
+ * description : 	method to trigger the execution of the command.
+ *
+ * @param	device	The device on which the command must be executed
+ * @param	in_any	The command input data
+ *
+ *	returns The command output data (packed in the Any object)
+ */
+//--------------------------------------------------------
+CORBA::Any *SetTrigParamAClass::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
+{
+	cout2 << "SetTrigParamAClass::execute(): arrived" << endl;
+	((static_cast<Pico11 *>(device))->set_trig_param_a());
+	return new CORBA::Any();
+}
+
+//--------------------------------------------------------
+/**
+ * method : 		SetTrigParamBClass::execute()
+ * description : 	method to trigger the execution of the command.
+ *
+ * @param	device	The device on which the command must be executed
+ * @param	in_any	The command input data
+ *
+ *	returns The command output data (packed in the Any object)
+ */
+//--------------------------------------------------------
+CORBA::Any *SetTrigParamBClass::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
+{
+	cout2 << "SetTrigParamBClass::execute(): arrived" << endl;
+	((static_cast<Pico11 *>(device))->set_trig_param_b());
+	return new CORBA::Any();
+}
+
+//--------------------------------------------------------
+/**
+ * method : 		SetTrigParamCClass::execute()
+ * description : 	method to trigger the execution of the command.
+ *
+ * @param	device	The device on which the command must be executed
+ * @param	in_any	The command input data
+ *
+ *	returns The command output data (packed in the Any object)
+ */
+//--------------------------------------------------------
+CORBA::Any *SetTrigParamCClass::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
+{
+	cout2 << "SetTrigParamCClass::execute(): arrived" << endl;
+	((static_cast<Pico11 *>(device))->set_trig_param_c());
+	return new CORBA::Any();
+}
+
+//--------------------------------------------------------
+/**
+ * method : 		SetTrigParamDClass::execute()
+ * description : 	method to trigger the execution of the command.
+ *
+ * @param	device	The device on which the command must be executed
+ * @param	in_any	The command input data
+ *
+ *	returns The command output data (packed in the Any object)
+ */
+//--------------------------------------------------------
+CORBA::Any *SetTrigParamDClass::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
+{
+	cout2 << "SetTrigParamDClass::execute(): arrived" << endl;
+	((static_cast<Pico11 *>(device))->set_trig_param_d());
+	return new CORBA::Any();
+}
+
+//--------------------------------------------------------
+/**
+ * method : 		CollectBlockEtsClass::execute()
+ * description : 	method to trigger the execution of the command.
+ *
+ * @param	device	The device on which the command must be executed
+ * @param	in_any	The command input data
+ *
+ *	returns The command output data (packed in the Any object)
+ */
+//--------------------------------------------------------
+CORBA::Any *CollectBlockEtsClass::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
+{
+	cout2 << "CollectBlockEtsClass::execute(): arrived" << endl;
+	((static_cast<Pico11 *>(device))->collect_block_ets());
+	return new CORBA::Any();
+}
+
 
 //===================================================================
 //	Properties management
@@ -613,6 +721,510 @@ void Pico11Class::attribute_factory(vector<Tango::Attr *> &att_list)
 	//	Not Memorized
 	att_list.push_back(devch);
 
+	//	Attribute : TrgCh
+	TrgChAttrib	*trgch = new TrgChAttrib();
+	Tango::UserDefaultAttrProp	trgch_prop;
+	//	description	not set for TrgCh
+	//	label	not set for TrgCh
+	//	unit	not set for TrgCh
+	//	standard_unit	not set for TrgCh
+	//	display_unit	not set for TrgCh
+	//	format	not set for TrgCh
+	//	max_value	not set for TrgCh
+	//	min_value	not set for TrgCh
+	//	max_alarm	not set for TrgCh
+	//	min_alarm	not set for TrgCh
+	//	max_warning	not set for TrgCh
+	//	min_warning	not set for TrgCh
+	//	delta_t	not set for TrgCh
+	//	delta_val	not set for TrgCh
+	
+	trgch->set_default_properties(trgch_prop);
+	//	Not Polled
+	trgch->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(trgch);
+
+	//	Attribute : DevChooseStr
+	DevChooseStrAttrib	*devchoosestr = new DevChooseStrAttrib();
+	Tango::UserDefaultAttrProp	devchoosestr_prop;
+	//	description	not set for DevChooseStr
+	//	label	not set for DevChooseStr
+	//	unit	not set for DevChooseStr
+	//	standard_unit	not set for DevChooseStr
+	//	display_unit	not set for DevChooseStr
+	//	format	not set for DevChooseStr
+	//	max_value	not set for DevChooseStr
+	//	min_value	not set for DevChooseStr
+	//	max_alarm	not set for DevChooseStr
+	//	min_alarm	not set for DevChooseStr
+	//	max_warning	not set for DevChooseStr
+	//	min_warning	not set for DevChooseStr
+	//	delta_t	not set for DevChooseStr
+	//	delta_val	not set for DevChooseStr
+	
+	devchoosestr->set_default_properties(devchoosestr_prop);
+	//	Not Polled
+	devchoosestr->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(devchoosestr);
+
+	//	Attribute : ThresholdUp
+	ThresholdUpAttrib	*thresholdup = new ThresholdUpAttrib();
+	Tango::UserDefaultAttrProp	thresholdup_prop;
+	//	description	not set for ThresholdUp
+	//	label	not set for ThresholdUp
+	//	unit	not set for ThresholdUp
+	//	standard_unit	not set for ThresholdUp
+	//	display_unit	not set for ThresholdUp
+	//	format	not set for ThresholdUp
+	//	max_value	not set for ThresholdUp
+	//	min_value	not set for ThresholdUp
+	//	max_alarm	not set for ThresholdUp
+	//	min_alarm	not set for ThresholdUp
+	//	max_warning	not set for ThresholdUp
+	//	min_warning	not set for ThresholdUp
+	//	delta_t	not set for ThresholdUp
+	//	delta_val	not set for ThresholdUp
+	
+	thresholdup->set_default_properties(thresholdup_prop);
+	//	Not Polled
+	thresholdup->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(thresholdup);
+
+	//	Attribute : ThresholdLo
+	ThresholdLoAttrib	*thresholdlo = new ThresholdLoAttrib();
+	Tango::UserDefaultAttrProp	thresholdlo_prop;
+	//	description	not set for ThresholdLo
+	//	label	not set for ThresholdLo
+	//	unit	not set for ThresholdLo
+	//	standard_unit	not set for ThresholdLo
+	//	display_unit	not set for ThresholdLo
+	//	format	not set for ThresholdLo
+	//	max_value	not set for ThresholdLo
+	//	min_value	not set for ThresholdLo
+	//	max_alarm	not set for ThresholdLo
+	//	min_alarm	not set for ThresholdLo
+	//	max_warning	not set for ThresholdLo
+	//	min_warning	not set for ThresholdLo
+	//	delta_t	not set for ThresholdLo
+	//	delta_val	not set for ThresholdLo
+	
+	thresholdlo->set_default_properties(thresholdlo_prop);
+	//	Not Polled
+	thresholdlo->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(thresholdlo);
+
+	//	Attribute : HysteresisUp
+	HysteresisUpAttrib	*hysteresisup = new HysteresisUpAttrib();
+	Tango::UserDefaultAttrProp	hysteresisup_prop;
+	//	description	not set for HysteresisUp
+	//	label	not set for HysteresisUp
+	//	unit	not set for HysteresisUp
+	//	standard_unit	not set for HysteresisUp
+	//	display_unit	not set for HysteresisUp
+	//	format	not set for HysteresisUp
+	//	max_value	not set for HysteresisUp
+	//	min_value	not set for HysteresisUp
+	//	max_alarm	not set for HysteresisUp
+	//	min_alarm	not set for HysteresisUp
+	//	max_warning	not set for HysteresisUp
+	//	min_warning	not set for HysteresisUp
+	//	delta_t	not set for HysteresisUp
+	//	delta_val	not set for HysteresisUp
+	
+	hysteresisup->set_default_properties(hysteresisup_prop);
+	//	Not Polled
+	hysteresisup->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(hysteresisup);
+
+	//	Attribute : HysteresisLo
+	HysteresisLoAttrib	*hysteresislo = new HysteresisLoAttrib();
+	Tango::UserDefaultAttrProp	hysteresislo_prop;
+	//	description	not set for HysteresisLo
+	//	label	not set for HysteresisLo
+	//	unit	not set for HysteresisLo
+	//	standard_unit	not set for HysteresisLo
+	//	display_unit	not set for HysteresisLo
+	//	format	not set for HysteresisLo
+	//	max_value	not set for HysteresisLo
+	//	min_value	not set for HysteresisLo
+	//	max_alarm	not set for HysteresisLo
+	//	min_alarm	not set for HysteresisLo
+	//	max_warning	not set for HysteresisLo
+	//	min_warning	not set for HysteresisLo
+	//	delta_t	not set for HysteresisLo
+	//	delta_val	not set for HysteresisLo
+	
+	hysteresislo->set_default_properties(hysteresislo_prop);
+	//	Not Polled
+	hysteresislo->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(hysteresislo);
+
+	//	Attribute : ThresholdMode
+	ThresholdModeAttrib	*thresholdmode = new ThresholdModeAttrib();
+	Tango::UserDefaultAttrProp	thresholdmode_prop;
+	//	description	not set for ThresholdMode
+	//	label	not set for ThresholdMode
+	//	unit	not set for ThresholdMode
+	//	standard_unit	not set for ThresholdMode
+	//	display_unit	not set for ThresholdMode
+	//	format	not set for ThresholdMode
+	//	max_value	not set for ThresholdMode
+	//	min_value	not set for ThresholdMode
+	//	max_alarm	not set for ThresholdMode
+	//	min_alarm	not set for ThresholdMode
+	//	max_warning	not set for ThresholdMode
+	//	min_warning	not set for ThresholdMode
+	//	delta_t	not set for ThresholdMode
+	//	delta_val	not set for ThresholdMode
+	
+	thresholdmode->set_default_properties(thresholdmode_prop);
+	//	Not Polled
+	thresholdmode->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(thresholdmode);
+
+	//	Attribute : ChanACond
+	ChanACondAttrib	*chanacond = new ChanACondAttrib();
+	Tango::UserDefaultAttrProp	chanacond_prop;
+	//	description	not set for ChanACond
+	//	label	not set for ChanACond
+	//	unit	not set for ChanACond
+	//	standard_unit	not set for ChanACond
+	//	display_unit	not set for ChanACond
+	//	format	not set for ChanACond
+	//	max_value	not set for ChanACond
+	//	min_value	not set for ChanACond
+	//	max_alarm	not set for ChanACond
+	//	min_alarm	not set for ChanACond
+	//	max_warning	not set for ChanACond
+	//	min_warning	not set for ChanACond
+	//	delta_t	not set for ChanACond
+	//	delta_val	not set for ChanACond
+	
+	chanacond->set_default_properties(chanacond_prop);
+	//	Not Polled
+	chanacond->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(chanacond);
+
+	//	Attribute : ChanBCond
+	ChanBCondAttrib	*chanbcond = new ChanBCondAttrib();
+	Tango::UserDefaultAttrProp	chanbcond_prop;
+	//	description	not set for ChanBCond
+	//	label	not set for ChanBCond
+	//	unit	not set for ChanBCond
+	//	standard_unit	not set for ChanBCond
+	//	display_unit	not set for ChanBCond
+	//	format	not set for ChanBCond
+	//	max_value	not set for ChanBCond
+	//	min_value	not set for ChanBCond
+	//	max_alarm	not set for ChanBCond
+	//	min_alarm	not set for ChanBCond
+	//	max_warning	not set for ChanBCond
+	//	min_warning	not set for ChanBCond
+	//	delta_t	not set for ChanBCond
+	//	delta_val	not set for ChanBCond
+	
+	chanbcond->set_default_properties(chanbcond_prop);
+	//	Not Polled
+	chanbcond->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(chanbcond);
+
+	//	Attribute : ChanCCond
+	ChanCCondAttrib	*chanccond = new ChanCCondAttrib();
+	Tango::UserDefaultAttrProp	chanccond_prop;
+	//	description	not set for ChanCCond
+	//	label	not set for ChanCCond
+	//	unit	not set for ChanCCond
+	//	standard_unit	not set for ChanCCond
+	//	display_unit	not set for ChanCCond
+	//	format	not set for ChanCCond
+	//	max_value	not set for ChanCCond
+	//	min_value	not set for ChanCCond
+	//	max_alarm	not set for ChanCCond
+	//	min_alarm	not set for ChanCCond
+	//	max_warning	not set for ChanCCond
+	//	min_warning	not set for ChanCCond
+	//	delta_t	not set for ChanCCond
+	//	delta_val	not set for ChanCCond
+	
+	chanccond->set_default_properties(chanccond_prop);
+	//	Not Polled
+	chanccond->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(chanccond);
+
+	//	Attribute : ChanDCond
+	ChanDCondAttrib	*chandcond = new ChanDCondAttrib();
+	Tango::UserDefaultAttrProp	chandcond_prop;
+	//	description	not set for ChanDCond
+	//	label	not set for ChanDCond
+	//	unit	not set for ChanDCond
+	//	standard_unit	not set for ChanDCond
+	//	display_unit	not set for ChanDCond
+	//	format	not set for ChanDCond
+	//	max_value	not set for ChanDCond
+	//	min_value	not set for ChanDCond
+	//	max_alarm	not set for ChanDCond
+	//	min_alarm	not set for ChanDCond
+	//	max_warning	not set for ChanDCond
+	//	min_warning	not set for ChanDCond
+	//	delta_t	not set for ChanDCond
+	//	delta_val	not set for ChanDCond
+	
+	chandcond->set_default_properties(chandcond_prop);
+	//	Not Polled
+	chandcond->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(chandcond);
+
+	//	Attribute : ChanAuxCond
+	ChanAuxCondAttrib	*chanauxcond = new ChanAuxCondAttrib();
+	Tango::UserDefaultAttrProp	chanauxcond_prop;
+	//	description	not set for ChanAuxCond
+	//	label	not set for ChanAuxCond
+	//	unit	not set for ChanAuxCond
+	//	standard_unit	not set for ChanAuxCond
+	//	display_unit	not set for ChanAuxCond
+	//	format	not set for ChanAuxCond
+	//	max_value	not set for ChanAuxCond
+	//	min_value	not set for ChanAuxCond
+	//	max_alarm	not set for ChanAuxCond
+	//	min_alarm	not set for ChanAuxCond
+	//	max_warning	not set for ChanAuxCond
+	//	min_warning	not set for ChanAuxCond
+	//	delta_t	not set for ChanAuxCond
+	//	delta_val	not set for ChanAuxCond
+	
+	chanauxcond->set_default_properties(chanauxcond_prop);
+	//	Not Polled
+	chanauxcond->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(chanauxcond);
+
+	//	Attribute : ChanPwqCond
+	ChanPwqCondAttrib	*chanpwqcond = new ChanPwqCondAttrib();
+	Tango::UserDefaultAttrProp	chanpwqcond_prop;
+	//	description	not set for ChanPwqCond
+	//	label	not set for ChanPwqCond
+	//	unit	not set for ChanPwqCond
+	//	standard_unit	not set for ChanPwqCond
+	//	display_unit	not set for ChanPwqCond
+	//	format	not set for ChanPwqCond
+	//	max_value	not set for ChanPwqCond
+	//	min_value	not set for ChanPwqCond
+	//	max_alarm	not set for ChanPwqCond
+	//	min_alarm	not set for ChanPwqCond
+	//	max_warning	not set for ChanPwqCond
+	//	min_warning	not set for ChanPwqCond
+	//	delta_t	not set for ChanPwqCond
+	//	delta_val	not set for ChanPwqCond
+	
+	chanpwqcond->set_default_properties(chanpwqcond_prop);
+	//	Not Polled
+	chanpwqcond->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(chanpwqcond);
+
+	//	Attribute : ChanExtCond
+	ChanExtCondAttrib	*chanextcond = new ChanExtCondAttrib();
+	Tango::UserDefaultAttrProp	chanextcond_prop;
+	//	description	not set for ChanExtCond
+	//	label	not set for ChanExtCond
+	//	unit	not set for ChanExtCond
+	//	standard_unit	not set for ChanExtCond
+	//	display_unit	not set for ChanExtCond
+	//	format	not set for ChanExtCond
+	//	max_value	not set for ChanExtCond
+	//	min_value	not set for ChanExtCond
+	//	max_alarm	not set for ChanExtCond
+	//	min_alarm	not set for ChanExtCond
+	//	max_warning	not set for ChanExtCond
+	//	min_warning	not set for ChanExtCond
+	//	delta_t	not set for ChanExtCond
+	//	delta_val	not set for ChanExtCond
+	
+	chanextcond->set_default_properties(chanextcond_prop);
+	//	Not Polled
+	chanextcond->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(chanextcond);
+
+	//	Attribute : ChanATrigDir
+	ChanATrigDirAttrib	*chanatrigdir = new ChanATrigDirAttrib();
+	Tango::UserDefaultAttrProp	chanatrigdir_prop;
+	//	description	not set for ChanATrigDir
+	//	label	not set for ChanATrigDir
+	//	unit	not set for ChanATrigDir
+	//	standard_unit	not set for ChanATrigDir
+	//	display_unit	not set for ChanATrigDir
+	//	format	not set for ChanATrigDir
+	//	max_value	not set for ChanATrigDir
+	//	min_value	not set for ChanATrigDir
+	//	max_alarm	not set for ChanATrigDir
+	//	min_alarm	not set for ChanATrigDir
+	//	max_warning	not set for ChanATrigDir
+	//	min_warning	not set for ChanATrigDir
+	//	delta_t	not set for ChanATrigDir
+	//	delta_val	not set for ChanATrigDir
+	
+	chanatrigdir->set_default_properties(chanatrigdir_prop);
+	//	Not Polled
+	chanatrigdir->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(chanatrigdir);
+
+	//	Attribute : ChanBTrigDir
+	ChanBTrigDirAttrib	*chanbtrigdir = new ChanBTrigDirAttrib();
+	Tango::UserDefaultAttrProp	chanbtrigdir_prop;
+	//	description	not set for ChanBTrigDir
+	//	label	not set for ChanBTrigDir
+	//	unit	not set for ChanBTrigDir
+	//	standard_unit	not set for ChanBTrigDir
+	//	display_unit	not set for ChanBTrigDir
+	//	format	not set for ChanBTrigDir
+	//	max_value	not set for ChanBTrigDir
+	//	min_value	not set for ChanBTrigDir
+	//	max_alarm	not set for ChanBTrigDir
+	//	min_alarm	not set for ChanBTrigDir
+	//	max_warning	not set for ChanBTrigDir
+	//	min_warning	not set for ChanBTrigDir
+	//	delta_t	not set for ChanBTrigDir
+	//	delta_val	not set for ChanBTrigDir
+	
+	chanbtrigdir->set_default_properties(chanbtrigdir_prop);
+	//	Not Polled
+	chanbtrigdir->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(chanbtrigdir);
+
+	//	Attribute : ChanCTrigDir
+	ChanCTrigDirAttrib	*chanctrigdir = new ChanCTrigDirAttrib();
+	Tango::UserDefaultAttrProp	chanctrigdir_prop;
+	//	description	not set for ChanCTrigDir
+	//	label	not set for ChanCTrigDir
+	//	unit	not set for ChanCTrigDir
+	//	standard_unit	not set for ChanCTrigDir
+	//	display_unit	not set for ChanCTrigDir
+	//	format	not set for ChanCTrigDir
+	//	max_value	not set for ChanCTrigDir
+	//	min_value	not set for ChanCTrigDir
+	//	max_alarm	not set for ChanCTrigDir
+	//	min_alarm	not set for ChanCTrigDir
+	//	max_warning	not set for ChanCTrigDir
+	//	min_warning	not set for ChanCTrigDir
+	//	delta_t	not set for ChanCTrigDir
+	//	delta_val	not set for ChanCTrigDir
+	
+	chanctrigdir->set_default_properties(chanctrigdir_prop);
+	//	Not Polled
+	chanctrigdir->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(chanctrigdir);
+
+	//	Attribute : ChanDTrigDir
+	ChanDTrigDirAttrib	*chandtrigdir = new ChanDTrigDirAttrib();
+	Tango::UserDefaultAttrProp	chandtrigdir_prop;
+	//	description	not set for ChanDTrigDir
+	//	label	not set for ChanDTrigDir
+	//	unit	not set for ChanDTrigDir
+	//	standard_unit	not set for ChanDTrigDir
+	//	display_unit	not set for ChanDTrigDir
+	//	format	not set for ChanDTrigDir
+	//	max_value	not set for ChanDTrigDir
+	//	min_value	not set for ChanDTrigDir
+	//	max_alarm	not set for ChanDTrigDir
+	//	min_alarm	not set for ChanDTrigDir
+	//	max_warning	not set for ChanDTrigDir
+	//	min_warning	not set for ChanDTrigDir
+	//	delta_t	not set for ChanDTrigDir
+	//	delta_val	not set for ChanDTrigDir
+	
+	chandtrigdir->set_default_properties(chandtrigdir_prop);
+	//	Not Polled
+	chandtrigdir->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(chandtrigdir);
+
+	//	Attribute : ChanAuxTrigDir
+	ChanAuxTrigDirAttrib	*chanauxtrigdir = new ChanAuxTrigDirAttrib();
+	Tango::UserDefaultAttrProp	chanauxtrigdir_prop;
+	//	description	not set for ChanAuxTrigDir
+	//	label	not set for ChanAuxTrigDir
+	//	unit	not set for ChanAuxTrigDir
+	//	standard_unit	not set for ChanAuxTrigDir
+	//	display_unit	not set for ChanAuxTrigDir
+	//	format	not set for ChanAuxTrigDir
+	//	max_value	not set for ChanAuxTrigDir
+	//	min_value	not set for ChanAuxTrigDir
+	//	max_alarm	not set for ChanAuxTrigDir
+	//	min_alarm	not set for ChanAuxTrigDir
+	//	max_warning	not set for ChanAuxTrigDir
+	//	min_warning	not set for ChanAuxTrigDir
+	//	delta_t	not set for ChanAuxTrigDir
+	//	delta_val	not set for ChanAuxTrigDir
+	
+	chanauxtrigdir->set_default_properties(chanauxtrigdir_prop);
+	//	Not Polled
+	chanauxtrigdir->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(chanauxtrigdir);
+
+	//	Attribute : ChanExtTrigDir
+	ChanExtTrigDirAttrib	*chanexttrigdir = new ChanExtTrigDirAttrib();
+	Tango::UserDefaultAttrProp	chanexttrigdir_prop;
+	//	description	not set for ChanExtTrigDir
+	//	label	not set for ChanExtTrigDir
+	//	unit	not set for ChanExtTrigDir
+	//	standard_unit	not set for ChanExtTrigDir
+	//	display_unit	not set for ChanExtTrigDir
+	//	format	not set for ChanExtTrigDir
+	//	max_value	not set for ChanExtTrigDir
+	//	min_value	not set for ChanExtTrigDir
+	//	max_alarm	not set for ChanExtTrigDir
+	//	min_alarm	not set for ChanExtTrigDir
+	//	max_warning	not set for ChanExtTrigDir
+	//	min_warning	not set for ChanExtTrigDir
+	//	delta_t	not set for ChanExtTrigDir
+	//	delta_val	not set for ChanExtTrigDir
+	
+	chanexttrigdir->set_default_properties(chanexttrigdir_prop);
+	//	Not Polled
+	chanexttrigdir->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(chanexttrigdir);
+
+	//	Attribute : TrigDelay
+	TrigDelayAttrib	*trigdelay = new TrigDelayAttrib();
+	Tango::UserDefaultAttrProp	trigdelay_prop;
+	//	description	not set for TrigDelay
+	//	label	not set for TrigDelay
+	//	unit	not set for TrigDelay
+	//	standard_unit	not set for TrigDelay
+	//	display_unit	not set for TrigDelay
+	//	format	not set for TrigDelay
+	//	max_value	not set for TrigDelay
+	//	min_value	not set for TrigDelay
+	//	max_alarm	not set for TrigDelay
+	//	min_alarm	not set for TrigDelay
+	//	max_warning	not set for TrigDelay
+	//	min_warning	not set for TrigDelay
+	//	delta_t	not set for TrigDelay
+	//	delta_val	not set for TrigDelay
+	
+	trigdelay->set_default_properties(trigdelay_prop);
+	//	Not Polled
+	trigdelay->set_disp_level(Tango::OPERATOR);
+	//	Not Memorized
+	att_list.push_back(trigdelay);
+
 	//	Attribute : chanA
 	chanAAttrib	*chana = new chanAAttrib();
 	Tango::UserDefaultAttrProp	chana_prop;
@@ -808,6 +1420,60 @@ void Pico11Class::command_factory()
 			"",
 			Tango::OPERATOR);
 	command_list.push_back(pOffCmd);
+
+	//	Command CollectBlock
+	CollectBlockClass	*pCollectBlockCmd =
+		new CollectBlockClass("CollectBlock",
+			Tango::DEV_VOID, Tango::DEV_VOID,
+			"",
+			"",
+			Tango::OPERATOR);
+	command_list.push_back(pCollectBlockCmd);
+
+	//	Command SetTrigParamA
+	SetTrigParamAClass	*pSetTrigParamACmd =
+		new SetTrigParamAClass("SetTrigParamA",
+			Tango::DEV_VOID, Tango::DEV_VOID,
+			"",
+			"",
+			Tango::OPERATOR);
+	command_list.push_back(pSetTrigParamACmd);
+
+	//	Command SetTrigParamB
+	SetTrigParamBClass	*pSetTrigParamBCmd =
+		new SetTrigParamBClass("SetTrigParamB",
+			Tango::DEV_VOID, Tango::DEV_VOID,
+			"",
+			"",
+			Tango::OPERATOR);
+	command_list.push_back(pSetTrigParamBCmd);
+
+	//	Command SetTrigParamC
+	SetTrigParamCClass	*pSetTrigParamCCmd =
+		new SetTrigParamCClass("SetTrigParamC",
+			Tango::DEV_VOID, Tango::DEV_VOID,
+			"",
+			"",
+			Tango::OPERATOR);
+	command_list.push_back(pSetTrigParamCCmd);
+
+	//	Command SetTrigParamD
+	SetTrigParamDClass	*pSetTrigParamDCmd =
+		new SetTrigParamDClass("SetTrigParamD",
+			Tango::DEV_VOID, Tango::DEV_VOID,
+			"",
+			"",
+			Tango::OPERATOR);
+	command_list.push_back(pSetTrigParamDCmd);
+
+	//	Command CollectBlockEts
+	CollectBlockEtsClass	*pCollectBlockEtsCmd =
+		new CollectBlockEtsClass("CollectBlockEts",
+			Tango::DEV_VOID, Tango::DEV_VOID,
+			"",
+			"",
+			Tango::OPERATOR);
+	command_list.push_back(pCollectBlockEtsCmd);
 
 	/*----- PROTECTED REGION ID(Pico11Class::command_factory_after) ENABLED START -----*/
 	
