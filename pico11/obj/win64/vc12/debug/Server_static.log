@@ -1,7 +1,4 @@
-﻿  ClassFactory.cpp
-  main.cpp
-  Generating Code...
-     Creating library ..\bin\win64\vc12\debug\Pico11.lib and object ..\bin\win64\vc12\debug\Pico11.exp
+﻿     Creating library ..\bin\win64\vc12\debug\Pico11.lib and object ..\bin\win64\vc12\debug\Pico11.exp
 COS4d.lib(CosEventCommSK.o) : warning LNK4099: PDB 'cosd.pdb' was not found with 'COS4d.lib(CosEventCommSK.o)' or at 'C:\Users\johnny\Desktop\pico11\bin\win64\vc12\debug\cosd.pdb'; linking object as if no debug info
 COS4d.lib(CosEventChannelAdminSK.o) : warning LNK4099: PDB 'cosd.pdb' was not found with 'COS4d.lib(CosEventChannelAdminSK.o)' or at 'C:\Users\johnny\Desktop\pico11\bin\win64\vc12\debug\cosd.pdb'; linking object as if no debug info
 COS4d.lib(CosNotificationSK.o) : warning LNK4099: PDB 'cosd.pdb' was not found with 'COS4d.lib(CosNotificationSK.o)' or at 'C:\Users\johnny\Desktop\pico11\bin\win64\vc12\debug\cosd.pdb'; linking object as if no debug info

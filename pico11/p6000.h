@@ -218,6 +218,7 @@ private:
 	int32_t timeIndisposed;
 	int16_t		g_ready2;
 	BOOL etsModeSet;
+	int logid;
 
 	
 	void StreamDataHandler(UNIT * unit);
@@ -225,7 +226,6 @@ private:
 	PICO_STATUS OpenDevice(UNIT * unit, int8_t * serial);
 	std::vector<std::string> enumer(uint16_t openIter, uint16_t devCount);
 	void set_info(UNIT * unit);
-	void checkStatus();
 	void checkStatus(PICO_STATUS status);
 	void CloseDevice(UNIT * unit);
 	PICO_STATUS HandleDevice(UNIT * unit);

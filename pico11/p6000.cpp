@@ -474,7 +474,10 @@ PICO_STATUS p6000::HandleDevice(UNIT * unit)
 
 	/* Trigger disabled	*/
 	SetTrigger(unit->handle, 0, NULL, 0, &directions, &pulseWidth, 0, 0, 0);
-
+	EnablChan[0] = 0;
+	EnablChan[1] = 0;
+	EnablChan[2] = 0;
+	EnablChan[3] = 0;
 	return unit->openStatus;
 }
 
@@ -487,10 +490,16 @@ void p6000::TriggerSetup(int trg)
 	switch (trg)
 	{
 	case 0:
-		SetTrigger(unit->handle, 0, NULL, 0, &directions, &pulseWidth, 0, 0, 0);
+		EnablChan[0] = 0;
+		EnablChan[1] = 0;
+		EnablChan[2] = 0;
+		EnablChan[3] = 0;
+		status = SetTrigger(unit->handle, 0, NULL, 0, &directions, &pulseWidth, 0, 0, 0);
+		checkStatus(status);
 		break;
 	case 1:
-		SetTrigger(unit->handle, 1, &conditions, 1, &directions, &pulseWidth, TrigDelay, 0, 0);
+		status = SetTrigger(unit->handle, 1, &conditions, 1, &directions, &pulseWidth, TrigDelay, 0, 0);
+		checkStatus(status);
 		break;
 	}
 	
@@ -517,9 +526,9 @@ PICO_STATUS p6000::SetTrigger(int16_t handle,
 			auxOutputEnabled,
 			autoTriggerMs)) != PICO_OK)
 		{
-			checkStatus(status);
 			return status;
 		}
+		//checkStatus(status);
 	}
 	if (EnablChan[1] == 1)
 	{
@@ -529,9 +538,9 @@ PICO_STATUS p6000::SetTrigger(int16_t handle,
 			auxOutputEnabled,
 			autoTriggerMs)) != PICO_OK)
 		{
-			checkStatus(status);
 			return status;
 		}
+		//checkStatus(status);
 	}
 	if (EnablChan[2] == 1)
 	{
@@ -541,9 +550,9 @@ PICO_STATUS p6000::SetTrigger(int16_t handle,
 			auxOutputEnabled,
 			autoTriggerMs)) != PICO_OK)
 		{
-			checkStatus(status);
 			return status;
 		}
+		//checkStatus(status);
 	}
 	if (EnablChan[3] == 1)
 	{
@@ -553,14 +562,14 @@ PICO_STATUS p6000::SetTrigger(int16_t handle,
 			auxOutputEnabled,
 			autoTriggerMs)) != PICO_OK)
 		{
-			checkStatus(status);
 			return status;
 		}
+		//checkStatus(status);
 	}
 
 	if ((status = ps6000SetTriggerChannelConditions(handle, triggerConditions, nTriggerConditions)) != PICO_OK)
 	{
-		checkStatus(status);
+		//checkStatus(status);
 		return status;
 	}
 
@@ -572,16 +581,16 @@ PICO_STATUS p6000::SetTrigger(int16_t handle,
 		directions->ext,
 		directions->aux)) != PICO_OK)
 	{
-		checkStatus(status);
 		return status;
 	}
+	//checkStatus(status);
 
 
 	if ((status = ps6000SetTriggerDelay(handle, delay)) != PICO_OK)
 	{
-		checkStatus(status);
 		return status;
 	}
+	//checkStatus(status);
 
 	if ((status = ps6000SetPulseWidthQualifier(handle,
 		pwq->conditions,
@@ -591,10 +600,9 @@ PICO_STATUS p6000::SetTrigger(int16_t handle,
 		pwq->upper,
 		pwq->type)) != PICO_OK)
 	{
-		checkStatus(status);
 		return status;
 	}
-
+	//checkStatus(status);
 	return status;
 }
 
@@ -608,7 +616,7 @@ p6000::p6000(std::string name)
 	std::stringstream ss;
 	ReadyToWork = FALSE;
 	TrigDelay = 0;
-
+	logid = 0;
 	conditions.channelA = PS6000_CONDITION_DONT_CARE;
 	conditions.channelB = PS6000_CONDITION_DONT_CARE;
 	conditions.channelC = PS6000_CONDITION_DONT_CARE;
@@ -1117,589 +1125,595 @@ void p6000::StopCollectStr()
 
 
 
-void p6000::checkStatus(PICO_STATUS status)
+void p6000::checkStatus(PICO_STATUS status12)
 {
 	std::stringstream ss;
-	switch (status)
+	logid++;
+	ss << logid << ".";
+	switch (status12)
 	{
 	case PICO_NOT_FOUND:
-		ss << "PICO_NOT_FOUND"; 
+		ss << "PICO_NOT_FOUND" << std::endl; 
 		break;
 	case PICO_INVALID_HANDLE:
-		ss << "PICO_INVALID_HANDLE"; 
+		ss << "PICO_INVALID_HANDLE" << std::endl;
 		break;
 	case PICO_DRIVER_FUNCTION:
-		ss << "PICO_DRIVER_FUNCTION"; 
+		ss << "PICO_DRIVER_FUNCTION" << std::endl;
 		break;
 	case PICO_INVALID_VOLTAGE_RANGE:
-		ss << "PICO_INVALID_VOLTAGE_RANGE"; 
+		ss << "PICO_INVALID_VOLTAGE_RANGE" << std::endl;
 		break;
 	case PICO_NULL_PARAMETER:
-		ss << "PICO_NULL_PARAMETER"; 
+		ss << "PICO_NULL_PARAMETER" << std::endl;
 		break;
 	case PICO_MAX_UNITS_OPENED:
-		ss << "PICO_MAX_UNITS_OPENED"; 
+		ss << "PICO_MAX_UNITS_OPENED" << std::endl;
 		break;
 	case PICO_MEMORY_FAIL:
-		ss << "PICO_MEMORY_FAIL"; 
+		ss << "PICO_MEMORY_FAIL" << std::endl;
 		break;
 	case PICO_FW_FAIL:
-		ss << "PICO_FW_FAIL"; 
+		ss << "PICO_FW_FAIL" << std::endl;
 		break;
 	case PICO_OPEN_OPERATION_IN_PROGRESS:
-		ss << "PICO_OPEN_OPERATION_IN_PROGRESS"; 
+		ss << "PICO_OPEN_OPERATION_IN_PROGRESS" << std::endl;
 		break;
 	case PICO_OPERATION_FAILED:
-		ss << "PICO_OPERATION_FAILED"; 
+		ss << "PICO_OPERATION_FAILED" << std::endl;
 		break;
 	case PICO_NOT_RESPONDING:
-		ss << "PICO_NOT_RESPONDING"; 
+		ss << "PICO_NOT_RESPONDING" << std::endl;
 		break;
 	case PICO_CONFIG_FAIL:
-		ss << "PICO_CONFIG_FAIL"; 
+		ss << "PICO_CONFIG_FAIL" << std::endl;
 		break;
 	case PICO_KERNEL_DRIVER_TOO_OLD:
-		ss << "PICO_KERNEL_DRIVER_TOO_OLD"; 
+		ss << "PICO_KERNEL_DRIVER_TOO_OLD" << std::endl;
 		break;
 	case PICO_EEPROM_CORRUPT:
-		ss << "PICO_EEPROM_CORRUPT"; 
+		ss << "PICO_EEPROM_CORRUPT" << std::endl;
 		break;
 	case PICO_OS_NOT_SUPPORTED:
-		ss << "PICO_OS_NOT_SUPPORTED"; 
+		ss << "PICO_OS_NOT_SUPPORTED" << std::endl;
 		break;
 	case PICO_INVALID_PARAMETER:
-		ss << "PICO_INVALID_PARAMETER"; 
+		ss << "PICO_INVALID_PARAMETER" << std::endl;
 		break;
 	case PICO_INVALID_TIMEBASE:
-		ss << "PICO_INVALID_TIMEBASE"; 
+		ss << "PICO_INVALID_TIMEBASE" << std::endl;
 		break;
 	case PICO_INVALID_CHANNEL:
-		ss << "PICO_INVALID_CHANNEL"; 
+		ss << "PICO_INVALID_CHANNEL" << std::endl;
 		break;
 	case PICO_INVALID_TRIGGER_CHANNEL:
-		ss << "PICO_INVALID_TRIGGER_CHANNEL"; 
+		ss << "PICO_INVALID_TRIGGER_CHANNEL" << std::endl;
 		break;
 	case PICO_INVALID_CONDITION_CHANNEL:
-		ss << "PICO_INVALID_CONDITION_CHANNEL"; 
+		ss << "PICO_INVALID_CONDITION_CHANNEL" << std::endl;
 		break;
 	case PICO_NO_SIGNAL_GENERATOR:
-		ss << "PICO_NO_SIGNAL_GENERATOR"; 
+		ss << "PICO_NO_SIGNAL_GENERATOR" << std::endl;
 		break;
 	case PICO_STREAMING_FAILED:
-		ss << "PICO_STREAMING_FAILED"; 
+		ss << "PICO_STREAMING_FAILED" << std::endl;
 		break;
 	case PICO_BLOCK_MODE_FAILED:
-		ss << "PICO_BLOCK_MODE_FAILED"; 
+		ss << "PICO_BLOCK_MODE_FAILED" << std::endl;
 		break;
 	case PICO_ETS_MODE_SET:
-		ss << "PICO_ETS_MODE_SET"; 
+		ss << "PICO_ETS_MODE_SET" << std::endl;
 		break;
 	case PICO_DATA_NOT_AVAILABLE:
-		ss << "PICO_DATA_NOT_AVAILABLE"; 
+		ss << "PICO_DATA_NOT_AVAILABLE" << std::endl;
 		break;
 	case PICO_STRING_BUFFER_TO_SMALL:
-		ss << "PICO_STRING_BUFFER_TO_SMALL"; 
+		ss << "PICO_STRING_BUFFER_TO_SMALL" << std::endl;
 		break;
 	case PICO_ETS_NOT_SUPPORTED:
-		ss << "PICO_ETS_NOT_SUPPORTED"; 
+		ss << "PICO_ETS_NOT_SUPPORTED" << std::endl;
 		break;
 	case PICO_AUTO_TRIGGER_TIME_TO_SHORT:
-		ss << "PICO_AUTO_TRIGGER_TIME_TO_SHORT"; 
+		ss << "PICO_AUTO_TRIGGER_TIME_TO_SHORT" << std::endl;
 		break;
 	case PICO_BUFFER_STALL:
-		ss << "PICO_BUFFER_STALL"; 
+		ss << "PICO_BUFFER_STALL" << std::endl;
 		break;
 	case PICO_TOO_MANY_SAMPLES:
-		ss << "PICO_TOO_MANY_SAMPLES"; 
+		ss << "PICO_TOO_MANY_SAMPLES" << std::endl;
 		break;
 	case PICO_TOO_MANY_SEGMENTS:
-		ss << "PICO_TOO_MANY_SEGMENTS"; 
+		ss << "PICO_TOO_MANY_SEGMENTS" << std::endl;
 		break;
 	case PICO_PULSE_WIDTH_QUALIFIER:
-		ss << "PICO_PULSE_WIDTH_QUALIFIER"; 
+		ss << "PICO_PULSE_WIDTH_QUALIFIER" << std::endl;
 		break;
 	case PICO_DELAY:
-		ss << "PICO_DELAY"; 
+		ss << "PICO_DELAY" << std::endl;
 		break;
 	case PICO_SOURCE_DETAILS:
-		ss << "PICO_SOURCE_DETAILS"; 
+		ss << "PICO_SOURCE_DETAILS" << std::endl;
 		break;
 	case PICO_CONDITIONS:
-		ss << "PICO_CONDITIONS"; 
+		ss << "PICO_CONDITIONS" << std::endl;
 		break;
 	case PICO_USER_CALLBACK:
-		ss << "PICO_USER_CALLBACK"; 
+		ss << "PICO_USER_CALLBACK" << std::endl;
 		break;
 	case PICO_DEVICE_SAMPLING:
-		ss << "PICO_DEVICE_SAMPLING"; 
+		ss << "PICO_DEVICE_SAMPLING" << std::endl;
 		break;
 	case PICO_NO_SAMPLES_AVAILABLE:
-		ss << "PICO_NO_SAMPLES_AVAILABLE"; 
+		ss << "PICO_NO_SAMPLES_AVAILABLE" << std::endl;
 		break;
 	case PICO_SEGMENT_OUT_OF_RANGE:
-		ss << "PICO_SEGMENT_OUT_OF_RANGE"; 
+		ss << "PICO_SEGMENT_OUT_OF_RANGE" << std::endl;
 		break;
 	case PICO_BUSY:
-		ss << "PICO_BUSY"; 
+		ss << "PICO_BUSY" << std::endl;
 		break;
 	case PICO_STARTINDEX_INVALID:
-		ss << "PICO_STARTINDEX_INVALID"; 
+		ss << "PICO_STARTINDEX_INVALID" << std::endl;
 		break;
 	case PICO_INVALID_INFO:
-		ss << "PICO_INVALID_INFO"; 
+		ss << "PICO_INVALID_INFO" << std::endl;
 		break;
 	case PICO_INFO_UNAVAILABLE:
-		ss << "PICO_INFO_UNAVAILABLE"; 
+		ss << "PICO_INFO_UNAVAILABLE" << std::endl;
 		break;
 	case PICO_INVALID_SAMPLE_INTERVAL:
-		ss << "PICO_INVALID_SAMPLE_INTERVAL"; 
+		ss << "PICO_INVALID_SAMPLE_INTERVAL" << std::endl;
 		break;
 	case PICO_TRIGGER_ERROR:
-		ss << "PICO_TRIGGER_ERROR"; 
+		ss << "PICO_TRIGGER_ERROR" << std::endl;
 		break;
 	case PICO_MEMORY:
-		ss << "PICO_MEMORY"; 
+		ss << "PICO_MEMORY" << std::endl;
 		break;
 	case PICO_SIG_GEN_PARAM:
-		ss << "PICO_SIG_GEN_PARAM"; 
+		ss << "PICO_SIG_GEN_PARAM" << std::endl;
 		break;
 	case PICO_SHOTS_SWEEPS_WARNING:
-		ss << "PICO_SHOTS_SWEEPS_WARNING"; 
+		ss << "PICO_SHOTS_SWEEPS_WARNING" << std::endl;
 		break;
 	case PICO_SIGGEN_TRIGGER_SOURCE:
-		ss << "PICO_SIGGEN_TRIGGER_SOURCE"; 
+		ss << "PICO_SIGGEN_TRIGGER_SOURCE" << std::endl;
 		break;
 	case PICO_AUX_OUTPUT_CONFLICT:
-		ss << "PICO_AUX_OUTPUT_CONFLICT"; 
+		ss << "PICO_AUX_OUTPUT_CONFLICT" << std::endl;
 		break;
 	case PICO_AUX_OUTPUT_ETS_CONFLICT:
-		ss << "PICO_AUX_OUTPUT_ETS_CONFLICT"; 
+		ss << "PICO_AUX_OUTPUT_ETS_CONFLICT" << std::endl;
 		break;
 	case PICO_WARNING_EXT_THRESHOLD_CONFLICT:
-		ss << "PICO_WARNING_EXT_THRESHOLD_CONFLICT"; 
+		ss << "PICO_WARNING_EXT_THRESHOLD_CONFLICT" << std::endl;
 		break;
 	case PICO_WARNING_AUX_OUTPUT_CONFLICT:
-		ss << "PICO_WARNING_AUX_OUTPUT_CONFLICT"; 
+		ss << "PICO_WARNING_AUX_OUTPUT_CONFLICT" << std::endl;
 		break;
 	case PICO_SIGGEN_OUTPUT_OVER_VOLTAGE:
-		ss << "PICO_SIGGEN_OUTPUT_OVER_VOLTAGE";
+		ss << "PICO_SIGGEN_OUTPUT_OVER_VOLTAGE" << std::endl;
 		break;
 	case PICO_DELAY_NULL:
-		ss << "PICO_DELAY_NULL"; 
+		ss << "PICO_DELAY_NULL" << std::endl;
 		break;
 	case PICO_INVALID_BUFFER:
-		ss << "PICO_INVALID_BUFFER"; 
+		ss << "PICO_INVALID_BUFFER" << std::endl;
 		break;
 	case PICO_SIGGEN_OFFSET_VOLTAGE:
-		ss << "PICO_SIGGEN_OFFSET_VOLTAGE"; 
+		ss << "PICO_SIGGEN_OFFSET_VOLTAGE" << std::endl;
 		break;
 	case PICO_SIGGEN_PK_TO_PK:
-		ss << "PICO_SIGGEN_PK_TO_PK"; 
+		ss << "PICO_SIGGEN_PK_TO_PK" << std::endl;
 		break;
 	case PICO_CANCELLED:
-		ss << "PICO_CANCELLED"; 
+		ss << "PICO_CANCELLED" << std::endl;
 		break;
 	case PICO_SEGMENT_NOT_USED:
-		ss << "PICO_SEGMENT_NOT_USED"; 
+		ss << "PICO_SEGMENT_NOT_USED" << std::endl;
 		break;
 	case PICO_INVALID_CALL:
-		ss << "PICO_INVALID_CALL"; 
+		ss << "PICO_INVALID_CALL" << std::endl;
 		break;
 	case PICO_GET_VALUES_INTERRUPTED:
-		ss << "PICO_GET_VALUES_INTERRUPTED"; 
+		ss << "PICO_GET_VALUES_INTERRUPTED" << std::endl;
 		break;
 	case PICO_NOT_USED:
-		ss << "PICO_NOT_USED"; 
+		ss << "PICO_NOT_USED" << std::endl;
 		break;
 	case PICO_INVALID_SAMPLERATIO:
-		ss << "PICO_INVALID_SAMPLERATIO"; 
+		ss << "PICO_INVALID_SAMPLERATIO" << std::endl;
 		break;
 	case PICO_INVALID_STATE:
-		ss << "PICO_INVALID_STATE"; 
+		ss << "PICO_INVALID_STATE" << std::endl;
 		break;
 	case PICO_NOT_ENOUGH_SEGMENTS:
-		ss << "PICO_NOT_ENOUGH_SEGMENTS"; 
+		ss << "PICO_NOT_ENOUGH_SEGMENTS" << std::endl;
 		break;
 	case PICO_RESERVED:
-		ss << "PICO_RESERVED"; 
+		ss << "PICO_RESERVED" << std::endl;
 		break;
 	case PICO_INVALID_COUPLING:
-		ss << "PICO_INVALID_COUPLING"; 
+		ss << "PICO_INVALID_COUPLING" << std::endl;
 		break;
 	case PICO_BUFFERS_NOT_SET:
-		ss << "PICO_BUFFERS_NOT_SET"; 
+		ss << "PICO_BUFFERS_NOT_SET" << std::endl;
 		break;
 	case PICO_RATIO_MODE_NOT_SUPPORTED:
-		ss << "PICO_RATIO_MODE_NOT_SUPPORTED"; 
+		ss << "PICO_RATIO_MODE_NOT_SUPPORTED" << std::endl;
 		break;
 	case PICO_RAPID_NOT_SUPPORT_AGGREGATION:
-		ss << "PICO_RAPID_NOT_SUPPORT_AGGREGATION"; 
+		ss << "PICO_RAPID_NOT_SUPPORT_AGGREGATION" << std::endl;
 		break;
 	case PICO_INVALID_TRIGGER_PROPERTY:
-		ss << "PICO_INVALID_TRIGGER_PROPERTY"; 
+		ss << "PICO_INVALID_TRIGGER_PROPERTY" << std::endl;
 		break;
 	case PICO_INTERFACE_NOT_CONNECTED:
-		ss << "PICO_INTERFACE_NOT_CONNECTED"; 
+		ss << "PICO_INTERFACE_NOT_CONNECTED" << std::endl;
 		break;
 	case PICO_RESISTANCE_AND_PROBE_NOT_ALLOWED:
-		ss << "PICO_RESISTANCE_AND_PROBE_NOT_ALLOWED"; 
+		ss << "PICO_RESISTANCE_AND_PROBE_NOT_ALLOWED" << std::endl;
 		break;
 	case PICO_POWER_FAILED:
-		ss << "PICO_POWER_FAILED"; 
+		ss << "PICO_POWER_FAILED" << std::endl;
 		break;
 	case PICO_SIGGEN_WAVEFORM_SETUP_FAILED:
-		ss << "PICO_SIGGEN_WAVEFORM_SETUP_FAILED"; 
+		ss << "PICO_SIGGEN_WAVEFORM_SETUP_FAILED" << std::endl;
 		break;
 	case PICO_FPGA_FAIL:
-		ss << "PICO_FPGA_FAIL"; 
+		ss << "PICO_FPGA_FAIL" << std::endl;
 		break;
 	case PICO_POWER_MANAGER:
-		ss << "PICO_POWER_MANAGER"; 
+		ss << "PICO_POWER_MANAGER" << std::endl;
 		break;
 	case PICO_INVALID_ANALOGUE_OFFSET:
-		ss << "PICO_INVALID_ANALOGUE_OFFSET"; 
+		ss << "PICO_INVALID_ANALOGUE_OFFSET" << std::endl;
 		break;
 	case PICO_PLL_LOCK_FAILED:
-		ss << "PICO_PLL_LOCK_FAILED"; 
+		ss << "PICO_PLL_LOCK_FAILED" << std::endl;
 		break;
 	case PICO_ANALOG_BOARD:
-		ss << "PICO_ANALOG_BOARD"; 
+		ss << "PICO_ANALOG_BOARD" << std::endl;
 		break;
 	case PICO_CONFIG_FAIL_AWG:
-		ss << "PICO_CONFIG_FAIL_AWG"; 
+		ss << "PICO_CONFIG_FAIL_AWG" << std::endl;
 		break;
 	case PICO_INITIALISE_FPGA:
-		ss << "PICO_INITIALISE_FPGA"; 
+		ss << "PICO_INITIALISE_FPGA" << std::endl;
 		break;
 	case PICO_EXTERNAL_FREQUENCY_INVALID:
-		ss << "PICO_EXTERNAL_FREQUENCY_INVALID"; 
+		ss << "PICO_EXTERNAL_FREQUENCY_INVALID" << std::endl;
 		break;
 	case PICO_CLOCK_CHANGE_ERROR:
-		ss << "PICO_CLOCK_CHANGE_ERROR"; 
+		ss << "PICO_CLOCK_CHANGE_ERROR" << std::endl;
 		break;
 	case PICO_TRIGGER_AND_EXTERNAL_CLOCK_CLASH:
-		ss << "PICO_TRIGGER_AND_EXTERNAL_CLOCK_CLASH"; 
+		ss << "PICO_TRIGGER_AND_EXTERNAL_CLOCK_CLASH" << std::endl;
 		break;
 	case PICO_PWQ_AND_EXTERNAL_CLOCK_CLASH:
-		ss << "PICO_PWQ_AND_EXTERNAL_CLOCK_CLASH"; 
+		ss << "PICO_PWQ_AND_EXTERNAL_CLOCK_CLASH" << std::endl;
 		break;
 	case PICO_UNABLE_TO_OPEN_SCALING_FILE:
-		ss << "PICO_UNABLE_TO_OPEN_SCALING_FILE"; 
+		ss << "PICO_UNABLE_TO_OPEN_SCALING_FILE" << std::endl;
 		break;
 	case PICO_MEMORY_CLOCK_FREQUENCY:
-		ss << "PICO_MEMORY_CLOCK_FREQUENCY"; 
+		ss << "PICO_MEMORY_CLOCK_FREQUENCY" << std::endl;
 		break;
 	case PICO_I2C_NOT_RESPONDING:
-		ss << "PICO_I2C_NOT_RESPONDING"; 
+		ss << "PICO_I2C_NOT_RESPONDING" << std::endl;
 		break;
 	case PICO_NO_CAPTURES_AVAILABLE:
-		ss << "PICO_NO_CAPTURES_AVAILABLE"; 
+		ss << "PICO_NO_CAPTURES_AVAILABLE" << std::endl;
 		break;
 	case PICO_TOO_MANY_TRIGGER_CHANNELS_IN_USE:
-		ss << "PICO_TOO_MANY_TRIGGER_CHANNELS_IN_USE"; 
+		ss << "PICO_TOO_MANY_TRIGGER_CHANNELS_IN_USE" << std::endl;
 		break;
 	case PICO_INVALID_TRIGGER_DIRECTION:
-		ss << "PICO_INVALID_TRIGGER_DIRECTION"; 
+		ss << "PICO_INVALID_TRIGGER_DIRECTION" << std::endl;
 		break;
 	case PICO_INVALID_TRIGGER_STATES:
-		ss << "PICO_INVALID_TRIGGER_STATES";
+		ss << "PICO_INVALID_TRIGGER_STATES" << std::endl;
 		break;
 	case PICO_NOT_USED_IN_THIS_CAPTURE_MODE:
-		ss << "PICO_NOT_USED_IN_THIS_CAPTURE_MODE"; 
+		ss << "PICO_NOT_USED_IN_THIS_CAPTURE_MODE" << std::endl;
 		break;
 	case PICO_GET_DATA_ACTIVE:
-		ss << "PICO_GET_DATA_ACTIVE"; 
+		ss << "PICO_GET_DATA_ACTIVE" << std::endl;
 		break;
 	case PICO_IP_NETWORKED:
-		ss << "PICO_IP_NETWORKED"; 
+		ss << "PICO_IP_NETWORKED" << std::endl;
 		break;
 	case PICO_INVALID_IP_ADDRESS:
-		ss << "PICO_INVALID_IP_ADDRESS"; 
+		ss << "PICO_INVALID_IP_ADDRESS" << std::endl;
 		break;
 	case PICO_IPSOCKET_FAILED:
-		ss << "PICO_IPSOCKET_FAILED"; 
+		ss << "PICO_IPSOCKET_FAILED" << std::endl;
 		break;
 	case PICO_IPSOCKET_TIMEDOUT:
-		ss << "PICO_IPSOCKET_TIMEDOUT"; 
+		ss << "PICO_IPSOCKET_TIMEDOUT" << std::endl;
 		break;
 	case PICO_SETTINGS_FAILED:
-		ss << "PICO_SETTINGS_FAILED";
+		ss << "PICO_SETTINGS_FAILED" << std::endl;
 		break;
 	case PICO_NETWORK_FAILED:
-		ss << "PICO_NETWORK_FAILED"; 
+		ss << "PICO_NETWORK_FAILED" << std::endl;
 		break;
 	case PICO_WS2_32_DLL_NOT_LOADED:
-		ss << "PICO_WS2_32_DLL_NOT_LOADED";
+		ss << "PICO_WS2_32_DLL_NOT_LOADED" << std::endl;
 		break;
 	case PICO_INVALID_IP_PORT:
-		ss << "PICO_INVALID_IP_PORT";
+		ss << "PICO_INVALID_IP_PORT" << std::endl;
 		break;
 	case PICO_COUPLING_NOT_SUPPORTED:
-		ss << "PICO_COUPLING_NOT_SUPPORTED"; 
+		ss << "PICO_COUPLING_NOT_SUPPORTED" << std::endl;
 		break;
 	case PICO_BANDWIDTH_NOT_SUPPORTED:
-		ss << "PICO_BANDWIDTH_NOT_SUPPORTED"; 
+		ss << "PICO_BANDWIDTH_NOT_SUPPORTED" << std::endl;
 		break;
 	case PICO_INVALID_BANDWIDTH:
-		ss << "PICO_INVALID_BANDWIDTH"; 
+		ss << "PICO_INVALID_BANDWIDTH" << std::endl;
 		break;
 	case PICO_AWG_NOT_SUPPORTED:
-		ss << "PICO_AWG_NOT_SUPPORTED"; 
+		ss << "PICO_AWG_NOT_SUPPORTED" << std::endl;
 		break;
 	case PICO_ETS_NOT_RUNNING:
-		ss << "PICO_ETS_NOT_RUNNING"; 
+		ss << "PICO_ETS_NOT_RUNNING" << std::endl;
 		break;
 	case PICO_SIG_GEN_WHITENOISE_NOT_SUPPORTED:
-		ss << "PICO_SIG_GEN_WHITENOISE_NOT_SUPPORTED"; 
+		ss << "PICO_SIG_GEN_WHITENOISE_NOT_SUPPORTED" << std::endl;
 		break;
 	case PICO_SIG_GEN_WAVETYPE_NOT_SUPPORTED:
-		ss << "PICO_SIG_GEN_WAVETYPE_NOT_SUPPORTED"; 
+		ss << "PICO_SIG_GEN_WAVETYPE_NOT_SUPPORTED" << std::endl;
 		break;
 	case PICO_INVALID_DIGITAL_PORT:
-		ss << "PICO_INVALID_DIGITAL_PORT"; 
+		ss << "PICO_INVALID_DIGITAL_PORT" << std::endl;
 		break;
 	case PICO_INVALID_DIGITAL_CHANNEL:
-		ss << "PICO_INVALID_DIGITAL_CHANNEL"; 
+		ss << "PICO_INVALID_DIGITAL_CHANNEL" << std::endl;
 		break;
 	case PICO_INVALID_DIGITAL_TRIGGER_DIRECTION:
-		ss << "PICO_INVALID_DIGITAL_TRIGGER_DIRECTION"; 
+		ss << "PICO_INVALID_DIGITAL_TRIGGER_DIRECTION" << std::endl;
 		break;
 	case PICO_SIG_GEN_PRBS_NOT_SUPPORTED:
-		ss << "PICO_SIG_GEN_PRBS_NOT_SUPPORTED"; 
+		ss << "PICO_SIG_GEN_PRBS_NOT_SUPPORTED" << std::endl;
 		break;
 	case PICO_ETS_NOT_AVAILABLE_WITH_LOGIC_CHANNELS:
-		ss << "PICO_ETS_NOT_AVAILABLE_WITH_LOGIC_CHANNELS"; 
+		ss << "PICO_ETS_NOT_AVAILABLE_WITH_LOGIC_CHANNELS" << std::endl;
 		break;
 	case PICO_WARNING_REPEAT_VALUE:
-		ss << "PICO_WARNING_REPEAT_VALUE"; 
+		ss << "PICO_WARNING_REPEAT_VALUE" << std::endl;
 		break;
 	case PICO_POWER_SUPPLY_CONNECTED:
-		ss << "PICO_POWER_SUPPLY_CONNECTED"; 
+		ss << "PICO_POWER_SUPPLY_CONNECTED" << std::endl;
 		break;
 	case PICO_POWER_SUPPLY_NOT_CONNECTED:
-		ss << "PICO_POWER_SUPPLY_NOT_CONNECTED"; 
+		ss << "PICO_POWER_SUPPLY_NOT_CONNECTED" << std::endl;
 		break;
 	case PICO_POWER_SUPPLY_REQUEST_INVALID:
-		ss << "PICO_POWER_SUPPLY_REQUEST_INVALID"; 
+		ss << "PICO_POWER_SUPPLY_REQUEST_INVALID" << std::endl;
 		break;
 	case PICO_POWER_SUPPLY_UNDERVOLTAGE:
-		ss << "PICO_POWER_SUPPLY_UNDERVOLTAGE"; 
+		ss << "PICO_POWER_SUPPLY_UNDERVOLTAGE" << std::endl;
 		break;
 	case PICO_CAPTURING_DATA:
-		ss << "PICO_CAPTURING_DATA";
+		ss << "PICO_CAPTURING_DATA" << std::endl;
 		break;
 	case PICO_USB3_0_DEVICE_NON_USB3_0_PORT:
-		ss << "PICO_USB3_0_DEVICE_NON_USB3_0_PORT"; 
+		ss << "PICO_USB3_0_DEVICE_NON_USB3_0_PORT" << std::endl;
 		break;
 	case PICO_NOT_SUPPORTED_BY_THIS_DEVICE:
-		ss << "PICO_NOT_SUPPORTED_BY_THIS_DEVICE";
+		ss << "PICO_NOT_SUPPORTED_BY_THIS_DEVICE" << std::endl;
 		break;
 	case PICO_INVALID_DEVICE_RESOLUTION:
-		ss << "PICO_INVALID_DEVICE_RESOLUTION"; 
+		ss << "PICO_INVALID_DEVICE_RESOLUTION" << std::endl;
 		break;
 	case PICO_INVALID_NUMBER_CHANNELS_FOR_RESOLUTION:
-		ss << "PICO_INVALID_NUMBER_CHANNELS_FOR_RESOLUTION"; 
+		ss << "PICO_INVALID_NUMBER_CHANNELS_FOR_RESOLUTION" << std::endl;
 		break;
 	case PICO_CHANNEL_DISABLED_DUE_TO_USB_POWERED:
-		ss << "PICO_CHANNEL_DISABLED_DUE_TO_USB_POWERED"; 
+		ss << "PICO_CHANNEL_DISABLED_DUE_TO_USB_POWERED" << std::endl;
 		break;
 	case PICO_SIGGEN_DC_VOLTAGE_NOT_CONFIGURABLE:
-		ss << "PICO_SIGGEN_DC_VOLTAGE_NOT_CONFIGURABLE"; 
+		ss << "PICO_SIGGEN_DC_VOLTAGE_NOT_CONFIGURABLE" << std::endl;
 		break;
 	case PICO_NO_TRIGGER_ENABLED_FOR_TRIGGER_IN_PRE_TRIG:
-		ss << "PICO_NO_TRIGGER_ENABLED_FOR_TRIGGER_IN_PRE_TRIG"; 
+		ss << "PICO_NO_TRIGGER_ENABLED_FOR_TRIGGER_IN_PRE_TRIG" << std::endl;
 		break;
 	case PICO_TRIGGER_WITHIN_PRE_TRIG_NOT_ARMED:
-		ss << "PICO_TRIGGER_WITHIN_PRE_TRIG_NOT_ARMED"; 
+		ss << "PICO_TRIGGER_WITHIN_PRE_TRIG_NOT_ARMED" << std::endl;
 		break;
 	case PICO_TRIGGER_WITHIN_PRE_NOT_ALLOWED_WITH_DELAY:
-		ss << "PICO_TRIGGER_WITHIN_PRE_NOT_ALLOWED_WITH_DELAY"; 
+		ss << "PICO_TRIGGER_WITHIN_PRE_NOT_ALLOWED_WITH_DELAY" << std::endl;
 		break;
 	case PICO_TRIGGER_INDEX_UNAVAILABLE:
-		ss << "PICO_TRIGGER_INDEX_UNAVAILABLE"; 
+		ss << "PICO_TRIGGER_INDEX_UNAVAILABLE" << std::endl;
 		break;
 	case PICO_AWG_CLOCK_FREQUENCY:
-		ss << "PICO_AWG_CLOCK_FREQUENCY"; 
+		ss << "PICO_AWG_CLOCK_FREQUENCY" << std::endl;
 		break;
 	case PICO_TOO_MANY_CHANNELS_IN_USE:
-		ss << "PICO_TOO_MANY_CHANNELS_IN_USE"; 
+		ss << "PICO_TOO_MANY_CHANNELS_IN_USE" << std::endl;
 		break;
 	case PICO_NULL_CONDITIONS:
-		ss << "PICO_NULL_CONDITIONS"; 
+		ss << "PICO_NULL_CONDITIONS" << std::endl;
 		break;
 	case PICO_DUPLICATE_CONDITION_SOURCE:
-		ss << "PICO_DUPLICATE_CONDITION_SOURCE"; 
+		ss << "PICO_DUPLICATE_CONDITION_SOURCE" << std::endl;
 		break;
 	case PICO_INVALID_CONDITION_INFO:
-		ss << "PICO_INVALID_CONDITION_INFO"; 
+		ss << "PICO_INVALID_CONDITION_INFO" << std::endl;
 		break;
 	case PICO_SETTINGS_READ_FAILED:
-		ss << "PICO_SETTINGS_READ_FAILED"; 
+		ss << "PICO_SETTINGS_READ_FAILED" << std::endl;
 		break;
 	case PICO_SETTINGS_WRITE_FAILED:
-		ss << "PICO_SETTINGS_WRITE_FAILED"; 
+		ss << "PICO_SETTINGS_WRITE_FAILED" << std::endl;
 		break;
 	case PICO_ARGUMENT_OUT_OF_RANGE:
-		ss << "PICO_ARGUMENT_OUT_OF_RANGE"; 
+		ss << "PICO_ARGUMENT_OUT_OF_RANGE" << std::endl;
 		break;
 	case PICO_HARDWARE_VERSION_NOT_SUPPORTED:
-		ss << "PICO_HARDWARE_VERSION_NOT_SUPPORTED"; 
+		ss << "PICO_HARDWARE_VERSION_NOT_SUPPORTED" << std::endl;
 		break;
 	case PICO_DIGITAL_HARDWARE_VERSION_NOT_SUPPORTED:
-		ss << "PICO_DIGITAL_HARDWARE_VERSION_NOT_SUPPORTED"; 
+		ss << "PICO_DIGITAL_HARDWARE_VERSION_NOT_SUPPORTED" << std::endl;
 		break;
 	case PICO_ANALOGUE_HARDWARE_VERSION_NOT_SUPPORTED:
-		ss << "PICO_ANALOGUE_HARDWARE_VERSION_NOT_SUPPORTED";
+		ss << "PICO_ANALOGUE_HARDWARE_VERSION_NOT_SUPPORTED" << std::endl;
 		break;
 	case PICO_UNABLE_TO_CONVERT_TO_RESISTANCE:
-		ss << "PICO_UNABLE_TO_CONVERT_TO_RESISTANCE"; 
+		ss << "PICO_UNABLE_TO_CONVERT_TO_RESISTANCE" << std::endl;
 		break;
 	case PICO_DUPLICATED_CHANNEL:
-		ss << "PICO_DUPLICATED_CHANNEL"; 
+		ss << "PICO_DUPLICATED_CHANNEL" << std::endl;
 		break;
 	case PICO_INVALID_RESISTANCE_CONVERSION:
-		ss << "PICO_INVALID_RESISTANCE_CONVERSION"; 
+		ss << "PICO_INVALID_RESISTANCE_CONVERSION" << std::endl;
 		break;
 	case PICO_INVALID_VALUE_IN_MAX_BUFFER:
-		ss << "PICO_INVALID_VALUE_IN_MAX_BUFFER"; 
+		ss << "PICO_INVALID_VALUE_IN_MAX_BUFFER" << std::endl;
 		break;
 	case PICO_INVALID_VALUE_IN_MIN_BUFFER:
-		ss << "PICO_INVALID_VALUE_IN_MIN_BUFFER";
+		ss << "PICO_INVALID_VALUE_IN_MIN_BUFFER" << std::endl;
 		break;
 	case PICO_SIGGEN_FREQUENCY_OUT_OF_RANGE:
-		ss << "PICO_SIGGEN_FREQUENCY_OUT_OF_RANGE"; 
+		ss << "PICO_SIGGEN_FREQUENCY_OUT_OF_RANGE" << std::endl;
 		break;
 	case PICO_EEPROM2_CORRUPT:
-		ss << "PICO_EEPROM2_CORRUPT"; 
+		ss << "PICO_EEPROM2_CORRUPT" << std::endl;
 		break;
 	case PICO_EEPROM2_FAIL:
-		ss << "PICO_EEPROM2_FAIL"; 
+		ss << "PICO_EEPROM2_FAIL" << std::endl;
 		break;
 	case PICO_SERIAL_BUFFER_TOO_SMALL:
-		ss << "PICO_SERIAL_BUFFER_TOO_SMALL"; 
+		ss << "PICO_SERIAL_BUFFER_TOO_SMALL" << std::endl;
 		break;
 	case PICO_SIGGEN_TRIGGER_AND_EXTERNAL_CLOCK_CLASH:
-		ss << "PICO_SIGGEN_TRIGGER_AND_EXTERNAL_CLOCK_CLASH"; 
+		ss << "PICO_SIGGEN_TRIGGER_AND_EXTERNAL_CLOCK_CLASH" << std::endl;
 		break;
 	case PICO_WARNING_SIGGEN_AUXIO_TRIGGER_DISABLED:
-		ss << "PICO_WARNING_SIGGEN_AUXIO_TRIGGER_DISABLED"; 
+		ss << "PICO_WARNING_SIGGEN_AUXIO_TRIGGER_DISABLED" << std::endl;
 		break;
 	case PICO_SIGGEN_GATING_AUXIO_NOT_AVAILABLE:
-		ss << "PICO_SIGGEN_GATING_AUXIO_NOT_AVAILABLE"; 
+		ss << "PICO_SIGGEN_GATING_AUXIO_NOT_AVAILABLE" << std::endl;
 		break;
 	case PICO_SIGGEN_GATING_AUXIO_ENABLED:
-		ss << "PICO_SIGGEN_GATING_AUXIO_ENABLED";
+		ss << "PICO_SIGGEN_GATING_AUXIO_ENABLED" << std::endl;
 		break;
 	case PICO_RESOURCE_ERROR:
-		ss << "PICO_RESOURCE_ERROR";
+		ss << "PICO_RESOURCE_ERROR" << std::endl;
 		break;
 	case PICO_TEMPERATURE_TYPE_INVALID:
-		ss << "PICO_TEMPERATURE_TYPE_INVALID"; 
+		ss << "PICO_TEMPERATURE_TYPE_INVALID" << std::endl;
 		break;
 	case PICO_TEMPERATURE_TYPE_NOT_SUPPORTED:
-		ss << "PICO_TEMPERATURE_TYPE_NOT_SUPPORTED";
+		ss << "PICO_TEMPERATURE_TYPE_NOT_SUPPORTED" << std::endl;
 		break;
 	case PICO_TIMEOUT:
-		ss << "PICO_TIMEOUT"; 
+		ss << "PICO_TIMEOUT" << std::endl;
 		break;
 	case PICO_DEVICE_NOT_FUNCTIONING:
-		ss << "PICO_DEVICE_NOT_FUNCTIONING"; 
+		ss << "PICO_DEVICE_NOT_FUNCTIONING" << std::endl;
 		break;
 	case PICO_INTERNAL_ERROR:
-		ss << "PICO_INTERNAL_ERROR"; 
+		ss << "PICO_INTERNAL_ERROR" << std::endl;
 		break;
 	case PICO_MULTIPLE_DEVICES_FOUND:
-		ss << "PICO_MULTIPLE_DEVICES_FOUND"; 
+		ss << "PICO_MULTIPLE_DEVICES_FOUND" << std::endl;
 		break;
 	case PICO_WARNING_NUMBER_OF_SEGMENTS_REDUCED:
-		ss << "PICO_WARNING_NUMBER_OF_SEGMENTS_REDUCED"; 
+		ss << "PICO_WARNING_NUMBER_OF_SEGMENTS_REDUCED" << std::endl;
 		break;
 	case PICO_CAL_PINS_STATES:
-		ss << "PICO_CAL_PINS_STATES"; 
+		ss << "PICO_CAL_PINS_STATES" << std::endl;
 		break;
 	case PICO_CAL_PINS_FREQUENCY:
-		ss << "PICO_CAL_PINS_FREQUENCY"; 
+		ss << "PICO_CAL_PINS_FREQUENCY" << std::endl;
 		break;
 	case PICO_CAL_PINS_AMPLITUDE:
-		ss << "PICO_CAL_PINS_AMPLITUDE"; 
+		ss << "PICO_CAL_PINS_AMPLITUDE" << std::endl;
 		break;
 	case PICO_CAL_PINS_WAVETYPE:
-		ss << "PICO_CAL_PINS_WAVETYPE"; 
+		ss << "PICO_CAL_PINS_WAVETYPE" << std::endl;
 		break;
 	case PICO_CAL_PINS_OFFSET:
-		ss << "PICO_CAL_PINS_OFFSET"; 
+		ss << "PICO_CAL_PINS_OFFSET" << std::endl;
 		break;
 	case PICO_PROBE_FAULT:
-		ss << "PICO_PROBE_FAULT";
+		ss << "PICO_PROBE_FAULT" << std::endl;
 		break;
 	case PICO_PROBE_IDENTITY_UNKNOWN:
-		ss << "PICO_PROBE_IDENTITY_UNKNOWN"; 
+		ss << "PICO_PROBE_IDENTITY_UNKNOWN" << std::endl;
 		break;
 	case PICO_PROBE_POWER_DC_POWER_SUPPLY_REQUIRED:
-		ss << "PICO_PROBE_POWER_DC_POWER_SUPPLY_REQUIRED"; 
+		ss << "PICO_PROBE_POWER_DC_POWER_SUPPLY_REQUIRED" << std::endl;
 		break;
 	case PICO_PROBE_NOT_POWERED_WITH_DC_POWER_SUPPLY:
-		ss << "PICO_PROBE_NOT_POWERED_WITH_DC_POWER_SUPPLY";
+		ss << "PICO_PROBE_NOT_POWERED_WITH_DC_POWER_SUPPLY" << std::endl;
 		break;
 	case PICO_PROBE_CONFIG_FAILURE:
-		ss << "PICO_PROBE_CONFIG_FAILURE"; 
+		ss << "PICO_PROBE_CONFIG_FAILURE" << std::endl;
 		break;
 	case PICO_PROBE_INTERACTION_CALLBACK:
-		ss << "PICO_PROBE_INTERACTION_CALLBACK"; 
+		ss << "PICO_PROBE_INTERACTION_CALLBACK" << std::endl;
 		break;
 	case PICO_UNKNOWN_INTELLIGENT_PROBE:
-		ss << "PICO_UNKNOWN_INTELLIGENT_PROBE"; 
+		ss << "PICO_UNKNOWN_INTELLIGENT_PROBE" << std::endl;
 		break;
 	case PICO_INTELLIGENT_PROBE_CORRUPT:
-		ss << "PICO_INTELLIGENT_PROBE_CORRUPT";
+		ss << "PICO_INTELLIGENT_PROBE_CORRUPT" << std::endl;
 		break;
 	case PICO_PROBE_COLLECTION_NOT_STARTED:
-		ss << "PICO_PROBE_COLLECTION_NOT_STARTED"; 
+		ss << "PICO_PROBE_COLLECTION_NOT_STARTED" << std::endl;
 		break;
 	case PICO_PROBE_POWER_CONSUMPTION_EXCEEDED:
-		ss << "PICO_PROBE_POWER_CONSUMPTION_EXCEEDED";
+		ss << "PICO_PROBE_POWER_CONSUMPTION_EXCEEDED" << std::endl;
 		break;
 	case PICO_WARNING_PROBE_CHANNEL_OUT_OF_SYNC:
-		ss << "PICO_WARNING_PROBE_CHANNEL_OUT_OF_SYNC";
+		ss << "PICO_WARNING_PROBE_CHANNEL_OUT_OF_SYNC" << std::endl;
 		break;
 	case PICO_DEVICE_TIME_STAMP_RESET:
-		ss << "PICO_DEVICE_TIME_STAMP_RESET";
+		ss << "PICO_DEVICE_TIME_STAMP_RESET" << std::endl;
 		break;
 	case PICO_WATCHDOGTIMER:
-		ss << "PICO_WATCHDOGTIMER"; 
+		ss << "PICO_WATCHDOGTIMER" << std::endl;
 		break;
 	case PICO_IPP_NOT_FOUND:
-		ss << "PICO_IPP_NOT_FOUND"; 
+		ss << "PICO_IPP_NOT_FOUND" << std::endl;
 		break;
 	case PICO_IPP_NO_FUNCTION:
-		ss << "PICO_IPP_NO_FUNCTION"; 
+		ss << "PICO_IPP_NO_FUNCTION" << std::endl;
 		break;
 	case PICO_IPP_ERROR:
-		ss << "PICO_IPP_ERROR";
+		ss << "PICO_IPP_ERROR" << std::endl;
 		break;
 	case PICO_SHADOW_CAL_NOT_AVAILABLE:
-		ss << "PICO_SHADOW_CAL_NOT_AVAILABLE"; 
+		ss << "PICO_SHADOW_CAL_NOT_AVAILABLE" << std::endl;
 		break;
 	case PICO_SHADOW_CAL_DISABLED:
-		ss << "PICO_SHADOW_CAL_DISABLED"; 
+		ss << "PICO_SHADOW_CAL_DISABLED" << std::endl;
 		break;
 	case PICO_SHADOW_CAL_ERROR:
-		ss << "PICO_SHADOW_CAL_ERROR "; 
+		ss << "PICO_SHADOW_CAL_ERROR " << std::endl;
 		break;
 	case PICO_SHADOW_CAL_CORRUPT:
-		ss << "PICO_SHADOW_CAL_CORRUPT"; 
+		ss << "PICO_SHADOW_CAL_CORRUPT" << std::endl;
 		break;
 	case PICO_DEVICE_MEMORY_OVERFLOW:
-		ss << "PICO_DEVICE_MEMORY_OVERFLOW"; 
+		ss << "PICO_DEVICE_MEMORY_OVERFLOW" << std::endl;
 		break;
 	case PICO_RESERVED_1:
-		ss << "PICO_RESERVED_1"; 
+		ss << "PICO_RESERVED_1" << std::endl;
+		break;
+	case PICO_OK:
+		ss << "PICO_OK" << std::endl;
 		break;
 	default:
-		ss << "UNKNOWN EXCEPTION";
+		ss << "UNKNOWN EXCEPTION" << std::endl;
 		break;
 	}
-	throw std::runtime_error(ss.str());
+	std::cerr << ss.str();
+	//throw std::runtime_error(ss.str());
 }
 
 
